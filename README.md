@@ -25,14 +25,15 @@
 ##### _2. Overloading of operators for enhanced class functionality._
 ##### _3. Use of hierarchy to create a hierarchical structure of classes._
 ## Interface of the project
+### Implementation of a Model-View-Controller via: 
 #### _1. Choosing a csv file_
-#### _2. Choose a clustering algorithm_
+#### _2. Choosing a clustering algorithm_
     Cluster by hierarchy
     Cluster by medoids
     Cluster by means
-#### _3. Showcase silhouette data_
-#### _4. Extract silhouette data into a separate file_
-#### _5. Compare silhouette files_
+#### _3. Showcasing silhouette data_
+#### _4. Extracting silhouette data into a separate file_
+#### _5. Comparing silhouette files_
 #### _6. Documentation_
 ![Screenshot of a plan of the interface part 3](https://github.com/Lunciare/myproject_cpp2024/blob/master/3.jpg)
 ![Screenshot of a plan of the interface part 2](https://github.com/Lunciare/myproject_cpp2024/blob/master/2.jpg)
