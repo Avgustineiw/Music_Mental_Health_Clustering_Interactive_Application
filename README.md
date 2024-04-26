@@ -4,44 +4,47 @@
 ##### _Blinov Vladimir 234-2_
 ##### _Suvorova Alexandra 234-2_
 ## Topic
-#### Development of an Interactive application for clustering data by one's preferences in music.
+#### _Development of an Interactive application for clustering data by one's preferences in music._
 ## Description of the project
-##### The program aims to clusterize data based on a person’s preferences in music and find correlation between their preferences and mental health. 
-##### During the analysis, we also aim to compare 3 different clustering methods in order to find differences between them and determine the best method.
-##### The [dataset](https://www.kaggle.com/datasets/catherinerasgaitis/mxmh-survey-results/data) used in this project.
+##### _The program aims to clusterize data based on a person’s preferences in music and find correlation between their preferences and mental health._ 
+##### _During the analysis, we also aim to compare 3 different clustering methods in order to find differences between them and determine the best method._
+##### _The [dataset](https://www.kaggle.com/datasets/catherinerasgaitis/mxmh-survey-results/data) used in this project._
 ## Requirements
 ### Programming language
-##### The application will be developed using C++ and the Qt framework for the GUI. 
-##### Code Style used: using namespace std, Google code style.
+##### _The application will be developed using C++ and the Qt framework for the GUI._
+##### _Code Style used: using namespace std, Google code style._
 ### Interface approach
-##### Develop a user interface that allows users to interact with the project in different ways. 
-##### Interface will include 4 blocks with widgets such as input and output of data, options for clusterization algorithms and graphics view.  
+##### _Develop a user interface that allows users to interact with the project in different ways._
+##### _Interface will include 4 blocks with widgets such as input and output of data, options for clusterization algorithms and graphics view._  
 ### External data handling
-##### Capability to read .csv files (datasets) and write .txt files (output files). 
+##### _Capability to read .csv files (datasets) and write .txt files (output files)._
 ### Error handling
-##### Use of “throw” and ”catch” methods to handle errors which would otherwise crash the program/make it unusable
+##### _Use of “throw” and ”catch” methods to handle errors which would otherwise crash the program/make it unusable_
 ### Object-oriented features
-##### 1. Implementation of Setters and Getters for manipulating class properties. 
-##### 2. Overloading of operators for enhanced class functionality. 
-##### 3. Use of hierarchy to create a hierarchical structure of classes.
+##### _1. Implementation of Setters and Getters for manipulating class properties._
+##### _2. Overloading of operators for enhanced class functionality._
+##### _3. Use of hierarchy to create a hierarchical structure of classes._
 ## Interface of the project
-#### 1. Choosing a csv file
-#### 2. Choose a clustering algorithm
+#### _1. Choosing a csv file_
+#### _2. Choose a clustering algorithm_
     Cluster by hierarchy
     Cluster by medoids
     Cluster by means
-#### 3. Showcase silhouette data
-#### 4. Extract silhouette data into a separate file
-#### 5. Compare silhouette files
-#### 6. Documentation
+#### _3. Showcase silhouette data_
+#### _4. Extract silhouette data into a separate file_
+#### _5. Compare silhouette files_
+#### _6. Documentation_
+![Screenshot of a plan of the interface part 3](https://github.com/Lunciare/myproject_cpp2024/blob/master/3.jpg)
+![Screenshot of a plan of the interface part 2](https://github.com/Lunciare/myproject_cpp2024/blob/master/2.jpg)
+![Screenshot of a plan of the interface part 1](https://github.com/Lunciare/myproject_cpp2024/blob/master/1.jpg)
 ## Tasks in github project
-#### 1. Project initialization
+#### _1. Project initialization_
     Set up the Git repository with a README and the initial project structure.
-#### 2. Implement read from csv
-#### 3. Implement 3 clustering algorithms
+#### _2. Implement read from csv_
+#### _3. Implement 3 clustering algorithms_
     Clustering by hierarchy
     Clustering by medoids
     Clustering by means
-#### 4. Implement interpreting algorithm
-#### 5. Implement GUI
-#### 6. Write documentation
+#### _4. Implement interpreting algorithm_
+#### _5. Implement GUI_
+#### _6. Write documentation_
