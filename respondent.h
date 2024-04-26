@@ -1,5 +1,8 @@
 #include <string>
+#include <iostream>
+
 using namespace std;
+
 
 class Respondent
 {
@@ -77,4 +80,25 @@ public:
   void SetEffect(int effect) {
     this->_effect = effect;
   }
+
+  friend ostream& operator<<(ostream& out, const Respondent& respondent);
 };
+
+
+ostream& operator<<(ostream& out, const Respondent& respondent)
+{
+  out << "Age: " << respondent.GetAge() << '\n';
+  out << "Hpd: " << respondent.GetHpd() << '\n';
+  out << "Musician: " << respondent.GetMusician() << '\n';
+  out << "Frequency: " << respondent.GetFrequency() << '\n';
+  out << "Anxiety: " << respondent.GetAnxiety() << '\n';
+  out << "Depression: " << respondent.GetDepression() << '\n';
+  out << "Insomnia: " << respondent.GetInsomnia() << '\n';
+  out << "OCD: " << respondent.GetInsomnia() << '\n';
+  out << "Effect: " << respondent.GetEffect() << '\n';
+  out << '\n';
+
+  return out;
+}
+
+
