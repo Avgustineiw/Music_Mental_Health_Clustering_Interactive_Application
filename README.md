@@ -19,7 +19,7 @@
 ### External data handling
 ##### _Capability to read .csv files (datasets) and write .txt files (output files)._
 ### Error handling
-##### _Use of “throw” and ”catch” methods to handle errors which would otherwise crash the program/make it unusable_
+##### _Use of “try” and ”catch” methods to handle errors which would otherwise crash the program/make it unusable_
 ### Object-oriented features
 ##### _1. Implementation of Setters and Getters for manipulating class properties._
 ##### _2. Overloading of operators for enhanced class functionality._
