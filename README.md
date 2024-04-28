@@ -24,17 +24,24 @@
 ##### _2. Overloading of operators for enhanced class functionality._
 ##### _3. Use of hierarchy to create a hierarchical structure of classes._
 ## Interface of the project
-### The interface will include 3 forms:
-#### _1.	Input handling form: choosing a csv file._
-#### _2.	The form for choosing a clustering algorithm._
-##### _-	Cluster by hierarchy_
-##### _-	Cluster by medoids_
-##### _-	Cluster by means_
-#### _3.	Data display: Showcasing silhouette data, extracting silhouette data into a separate file._
-#### _4.    Documentation._
+### The following actions can be performed with the interface:
+#### Form #1
+##### _Documentation - opens a documentation file_
+##### _Open CSV - asks the user to open a .csv file and moves to form #2_
+##### _exit - closes the program_
+#### Form #2
+##### _Cluster by hierarchy - performs the clustering and moves to form #3_
+##### _Cluster by medoids - performs the clustering and moves to form #3_
+##### _Cluster by k-means - performs the clustering and moves to form #3_
+#### Form #3 
+##### _Showcases the result of clustering via silhouette algorithm_
+    Additionally, user can:
+    Extract the picture
+    Save it as .txt file
+    Return to form #2 to choose a different clustering algorithm
 ![Screenshot of a plan of the interface part 3](https://github.com/Lunciare/myproject_cpp2024/blob/master/3.jpg)
 ![Screenshot of a plan of the interface part 2](https://github.com/Lunciare/myproject_cpp2024/blob/master/2.jpg)
-![Screenshot of a plan of the interface part 1](https://github.com/Lunciare/myproject_cpp2024/blob/master/1.jpg)
+![Screenshot of a plan of the interface part 1](https://github.com/Lunciare/myproject_cpp2024/blob/master/1.1.jpg)
 ## Tasks in github project
 #### _1. Project initialization_
     Set up the Git repository with a README and the initial project structure.
