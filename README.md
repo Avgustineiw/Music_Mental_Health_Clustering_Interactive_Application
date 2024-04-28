@@ -35,6 +35,20 @@
 #### _4. Extracting silhouette data into a separate file_
 #### _5. Comparing silhouette files_
 #### _6. Documentation_
+### The following actions can be performed with the interface:
+#### Interface #1
+##### Documentation - opens a documentation file
+##### Open CSV - asks the user to open a .csv file and moves to interface #2
+##### exit - closes the program
+#### Interface #2
+##### Cluster by hierarchy - performs the clustering and moves to interface #3
+##### Cluster by medoids - performs the clustering and moves to interface #3
+##### Cluster by k-means - performs the clustering and moves to interface #3
+#### Interface #3 
+##### Showcases the result of clustering via silhouette algorithm
+    Additionally, user can:
+    Extract the picture
+    Save it as .txt file
 ![Screenshot of a plan of the interface part 3](https://github.com/Lunciare/myproject_cpp2024/blob/master/3.jpg)
 ![Screenshot of a plan of the interface part 2](https://github.com/Lunciare/myproject_cpp2024/blob/master/2.jpg)
 ![Screenshot of a plan of the interface part 1](https://github.com/Lunciare/myproject_cpp2024/blob/master/1.jpg)
