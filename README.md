@@ -25,30 +25,14 @@
 ##### _2. Overloading of operators for enhanced class functionality._
 ##### _3. Use of hierarchy to create a hierarchical structure of classes._
 ## Interface of the project
-### Implementation of a Model-View-Controller via: 
-#### _1. Choosing a csv file_
-#### _2. Choosing a clustering algorithm_
-    Cluster by hierarchy
-    Cluster by medoids
-    Cluster by means
-#### _3. Showcasing silhouette data_
-#### _4. Extracting silhouette data into a separate file_
-#### _5. Comparing silhouette files_
-#### _6. Documentation_
-### The following actions can be performed with the interface:
-#### Interface #1
-##### _Documentation - opens a documentation file_
-##### _Open CSV - asks the user to open a .csv file and moves to interface #2_
-##### _exit - closes the program_
-#### Interface #2
-##### _Cluster by hierarchy - performs the clustering and moves to interface #3_
-##### _Cluster by medoids - performs the clustering and moves to interface #3_
-##### _Cluster by k-means - performs the clustering and moves to interface #3_
-#### Interface #3 
-##### _Showcases the result of clustering via silhouette algorithm_
-    Additionally, user can:
-    Extract the picture
-    Save it as .txt file
+### The interface will include 3 forms:
+#### _1.	Input handling form: choosing a csv file._
+#### _2.	The form for choosing a clustering algorithm._
+##### _-	Cluster by hierarchy_
+##### _-	Cluster by medoids_
+##### _-	Cluster by means_
+#### _3.	Data display: Showcasing silhouette data, extracting silhouette data into a separate file._
+#### _4.    Documentation._
 ![Screenshot of a plan of the interface part 3](https://github.com/Lunciare/myproject_cpp2024/blob/master/3.jpg)
 ![Screenshot of a plan of the interface part 2](https://github.com/Lunciare/myproject_cpp2024/blob/master/2.jpg)
 ![Screenshot of a plan of the interface part 1](https://github.com/Lunciare/myproject_cpp2024/blob/master/1.jpg)
