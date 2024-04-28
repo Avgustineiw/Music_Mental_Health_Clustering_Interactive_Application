@@ -37,15 +37,15 @@
 #### _6. Documentation_
 ### The following actions can be performed with the interface:
 #### Interface #1
-##### Documentation - opens a documentation file
-##### Open CSV - asks the user to open a .csv file and moves to interface #2
-##### exit - closes the program
+##### _Documentation - opens a documentation file_
+##### _Open CSV - asks the user to open a .csv file and moves to interface #2_
+##### _exit - closes the program_
 #### Interface #2
-##### Cluster by hierarchy - performs the clustering and moves to interface #3
-##### Cluster by medoids - performs the clustering and moves to interface #3
-##### Cluster by k-means - performs the clustering and moves to interface #3
+##### _Cluster by hierarchy - performs the clustering and moves to interface #3_
+##### _Cluster by medoids - performs the clustering and moves to interface #3_
+##### _Cluster by k-means - performs the clustering and moves to interface #3_
 #### Interface #3 
-##### Showcases the result of clustering via silhouette algorithm
+##### _Showcases the result of clustering via silhouette algorithm_
     Additionally, user can:
     Extract the picture
     Save it as .txt file
