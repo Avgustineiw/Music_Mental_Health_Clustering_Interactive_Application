@@ -14,8 +14,7 @@
 ##### _The application will be developed using C++ and the Qt framework for the GUI._
 ##### _Code Style used: using namespace std, Google code style._
 ### Interface approach
-##### _Develop a user interface that allows users to interact with the project in different ways._
-##### _Interface will include 4 blocks with widgets such as input and output of data, options for clusterization algorithms and graphics view._  
+##### _Implementation of a Model-View-Controller._
 ### External data handling
 ##### _Capability to read .csv files (datasets) and write .txt files (output files)._
 ### Error handling
