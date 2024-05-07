@@ -18,11 +18,11 @@ private:
   int _effect;
 
 public:
-  Respondent(int _age, double _hpd, int _musician, int _frequency, int _anxiety, int _depression,
-             int _insomnia, int _ocd, int _effect)
-             : _age(_age), _hpd(_hpd), _musician(_musician), _frequency(_frequency),
-               _anxiety(_anxiety), _depression(_depression), _insomnia(_insomnia),
-               _ocd(_ocd), _effect(_effect) {};
+  Respondent(int age, double hpd, int musician, int frequency, int anxiety, int depression,
+             int insomnia, int ocd, int effect)
+             : _age(age), _hpd(hpd), _musician(musician), _frequency(frequency),
+               _anxiety(anxiety), _depression(depression), _insomnia(insomnia),
+               _ocd(ocd), _effect(effect) {};
   ~Respondent() {};
 
   int GetAge() const {
@@ -94,7 +94,7 @@ ostream& operator<<(ostream& out, const Respondent& respondent)
   out << "Anxiety: " << respondent.GetAnxiety() << '\n';
   out << "Depression: " << respondent.GetDepression() << '\n';
   out << "Insomnia: " << respondent.GetInsomnia() << '\n';
-  out << "OCD: " << respondent.GetInsomnia() << '\n';
+  out << "OCD: " << respondent.GetOcd() << '\n';
   out << "Effect: " << respondent.GetEffect() << '\n';
   out << '\n';
 
