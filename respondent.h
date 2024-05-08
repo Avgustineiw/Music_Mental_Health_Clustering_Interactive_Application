@@ -100,5 +100,3 @@ ostream& operator<<(ostream& out, const Respondent& respondent)
 
   return out;
 }
-
-
