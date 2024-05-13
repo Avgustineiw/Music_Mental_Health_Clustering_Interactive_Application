@@ -1,3 +1,4 @@
+#pragma once
 #include "respondent.h"
 
 #include <fstream>
@@ -11,7 +12,13 @@ using namespace std;
 
 void ReadFromCSV(const string& CSV_PATH, vector<vector<string>>& data) 
 {
-  ifstream csv(CSV_PATH);
+  ifstream csv;
+  csv.open(CSV_PATH, ifstream::in);
+
+  if (!csv.is_open()) {
+    std::cout << "Error while opening .csv file" << '\n';
+    return;
+  }
 
   string line, field;
 
@@ -25,6 +32,8 @@ void ReadFromCSV(const string& CSV_PATH, vector<vector<string>>& data)
     }
     data.push_back(tmp_data);
   }
+
+  csv.close();
   return;
 }
 

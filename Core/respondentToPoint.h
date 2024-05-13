@@ -1,5 +1,6 @@
+#pragma once
 #include "point.h"
-
+#include "respondent.h"
 
 const double AGE_WEIGTH = 0.5;
 const double HPD_WEIGTH = 2;
