@@ -15,7 +15,8 @@ const double EFFECT_WEIGTH = 10;
 
 ClusterPoint respondentToPoint(Respondent& respondent)
 {
-  ClusterPoint point = {0, 0, 1, 1};
+  ClusterPoint point = {0, 0, 1};
+
   double x = 0;
   double y = 0;
 
