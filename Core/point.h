@@ -35,6 +35,7 @@ private:
   int _clusterId;
 
 public: 
+
   ClusterPoint(double x, double y, int pointId, int clusterId = 0): 
                Point(x, y), _pointId(pointId), _clusterId(clusterId) {};
 
