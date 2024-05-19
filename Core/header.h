@@ -17,6 +17,7 @@ void InitializeProgram()
   vector<Respondent> respondents;
   vector<ClusterPoint> data_points;
 
+
   srand(time(NULL));
 
   ReadFromCSV(CSV_PATH, data);
@@ -29,4 +30,16 @@ void InitializeProgram()
   
   KMeans clustering = {2, 10, OUTPUT_PATH};
   clustering.Run(data_points);
+  
+  ofstream output_file(OUTPUT_PATH);
+  
+  for (size_t i = 0; i < respondents.size(); i++) {
+    // cout << respondents[i];
+    double x = 0, y = 0;
+    x = respondentToPoint(respondents[i]).GetX();
+    y = respondentToPoint(respondents[i]).GetY();
+    if (y != 0) {
+      output_file << x << "," << y << "," << (rand() & 1) + 1 << '\n';
+    }
+  }
 }
