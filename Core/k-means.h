@@ -1,5 +1,6 @@
 #pragma once
 #include "point.h"
+#include "silhouette.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,7 +10,6 @@
 #include <ctime>
 
 using namespace std;
-
 
 
 class KMeans
@@ -128,11 +128,13 @@ public:
 
     output.close();
 
-    for (size_t i = 0; i < _cluster_cnt; i++) {
-      cout << "cluster id: " << _clusters[i].GetClusterId() << '\n';
-      cout << "Amount of points: " << _clusters[i].GetClusterSize() << '\n';
-      cout << "Centroid X: " << _clusters[i].GetCentroidX() << '\n';
-      cout << "Centroid Y: " << _clusters[i].GetCentroidY() << "\n\n";
-    }
+    // for (size_t i = 0; i < _cluster_cnt; i++) {
+    //   cout << "cluster id: " << _clusters[i].GetClusterId() << '\n';
+    //   cout << "Amount of points: " << _clusters[i].GetClusterSize() << '\n';
+    //   cout << "Centroid X: " << _clusters[i].GetCentroidX() << '\n';
+    //   cout << "Centroid Y: " << _clusters[i].GetCentroidY() << "\n\n";
+    // }
+
+    cout << Silhouette(_clusters, points);
   }
 };

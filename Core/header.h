@@ -24,9 +24,9 @@ void InitializeProgram()
 
 
   for (size_t i = 0; i < respondents.size(); i++) {
-    data_points.push_back(respondentToPoint(respondents[i]));
+    data_points.push_back(respondentToPoint(respondents[i], i+1));
   }
   
-  KMeans clustering = {2, 100, OUTPUT_PATH};
+  KMeans clustering = {2, 10, OUTPUT_PATH};
   clustering.Run(data_points);
 }
