@@ -15,7 +15,7 @@ void InitializeProgram()
 {
   vector<vector<string>> data;
   vector<Respondent> respondents;
-  vector<ClusterPoint> data_points;
+  vector<Point> data_points;
 
   ReadFromCSV(CSV_PATH, data);
   DataToRespondent(data, respondents);

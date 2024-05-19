@@ -13,9 +13,9 @@ const double OCD_WEIGTH = 1;
 const double EFFECT_WEIGTH = 100;
 
 
-ClusterPoint respondentToPoint(Respondent& respondent, int id)
+Point respondentToPoint(Respondent& respondent, int id)
 {
-  ClusterPoint point = {0, 0, id};
+  Point point = {0, 0, id};
   double x = 0;
   double y = 0;
 

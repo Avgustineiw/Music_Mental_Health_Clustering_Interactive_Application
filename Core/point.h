@@ -9,9 +9,12 @@ class Point
 protected:
   double _x;
   double _y;
+  int _pointId;
+  int _clusterId;
 
 public:
-  Point(double x, double y): _x(x), _y(y) {};
+  Point(double x, double y, int pointId, int clusterId = 0): 
+        _x(x), _y(y), _pointId(pointId), _clusterId(clusterId) {};
   virtual double GetX() const {
     return _x;
   }
@@ -25,18 +28,6 @@ public:
   virtual void SetY(double y) {
     this->_y = y;
   }
-};
-
-
-class ClusterPoint : public Point
-{
-private:
-  int _pointId;
-  int _clusterId;
-
-public: 
-  ClusterPoint(double x, double y, int pointId, int clusterId = 0): 
-               Point(x, y), _pointId(pointId), _clusterId(clusterId) {};
 
   int GetPointId() const {
     return _pointId;
@@ -59,16 +50,16 @@ class Cluster
 protected:
   int _clusterId;
   vector<double> _centroid;
-  vector<ClusterPoint> _points;
+  vector<Point> _points;
 
 public:
-  Cluster(int clusterId, ClusterPoint centroid): _clusterId(clusterId) {
+  Cluster(int clusterId, Point centroid): _clusterId(clusterId) {
     this->_centroid.push_back(centroid.GetX());
     this->_centroid.push_back(centroid.GetY());
     this->SetPoint(centroid);
   };
   
-  void SetPoint(ClusterPoint point) {
+  void SetPoint(Point point) {
     point.SetClusterId(this->_clusterId);
     _points.push_back(point);
   }
