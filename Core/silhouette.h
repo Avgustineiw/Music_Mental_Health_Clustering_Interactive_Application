@@ -8,13 +8,13 @@
 using namespace std;
 
 
-double Distance(ClusterPoint p1, ClusterPoint p2)
+double Distance(Point p1, Point p2)
 {
   return sqrt(pow(p1.GetX() - p2.GetX(), 2) + pow(p1.GetY() - p2.GetY(), 2));
 }
 
 
-double Silhouette(vector<Cluster> clusters, vector<ClusterPoint> points)
+double Silhouette(vector<Cluster> clusters, vector<Point> points)
 {
   int size = points.size();
   vector<double> inner_mean, outer_mean;
