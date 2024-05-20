@@ -1,3 +1,4 @@
+#pragma once
 #include "point.h"
 
 #include <algorithm>
@@ -8,13 +9,13 @@
 using namespace std;
 
 
-double Distance(Point p1, Point p2)
+inline double Distance(const Point& p1, const Point& p2)
 {
   return sqrt(pow(p1.GetX() - p2.GetX(), 2) + pow(p1.GetY() - p2.GetY(), 2));
 }
 
 
-double Silhouette(vector<Cluster> clusters, vector<Point> points)
+double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 {
   int size = points.size();
   vector<double> inner_mean, outer_mean;

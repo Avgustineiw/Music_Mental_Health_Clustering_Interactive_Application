@@ -22,10 +22,10 @@ public:
     return _y;
   }
 
-  virtual void SetX(double x) {
+  virtual void SetX(double& x) {
     this->_x = x;
   }
-  virtual void SetY(double y) {
+  virtual void SetY(double& y) {
     this->_y = y;
   }
 
@@ -59,11 +59,11 @@ public:
     this->SetPoint(centroid);
   };
   
-  void SetPoint(Point point) {
+  void SetPoint(Point& point) {
     point.SetClusterId(this->_clusterId);
     _points.push_back(point);
   }
-  bool RemovePoint(int pointId) {
+  bool RemovePoint(int& pointId) {
     int size = _points.size();
 
     for (size_t i = 0; i < size; i++) {
@@ -78,7 +78,7 @@ public:
   void RemoveAllPoints() {
     _points.clear();
   }
-  Point GetPoint(int pointId) {
+  Point GetPoint(int pointId) const {
     return _points[pointId];
   }
 

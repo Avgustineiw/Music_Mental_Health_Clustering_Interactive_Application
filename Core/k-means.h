@@ -24,7 +24,7 @@ public:
   KMeans(int cluster_cnt, int iterations, string output_path): 
          ClusteringAlgorithm(cluster_cnt, iterations), _output_path(output_path) {};
   
-  ClusteringResult Run(vector<Point> points) override {
+  ClusteringResult Run(vector<Point>& points) override {
     _total_points = points.size();
 
     vector<int> used_pointIds;

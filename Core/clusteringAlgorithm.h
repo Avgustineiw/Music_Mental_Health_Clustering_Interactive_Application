@@ -27,7 +27,7 @@ protected:
     }
   }
 
-  int GetNearestClusterId(Point point) {
+  int GetNearestClusterId(Point& point) const {
     double sum = 0, dist = 0, min_dist = 0;
     int NearestClusterId = 0;
     
@@ -59,5 +59,5 @@ protected:
 public:
   ClusteringAlgorithm(int cluster_cnt, int iterations):  
                        _cluster_cnt(cluster_cnt), _iterations(iterations) {};
-  virtual ClusteringResult Run(vector<Point> points) = 0;
+  virtual ClusteringResult Run(vector<Point>& points) = 0;
 };
