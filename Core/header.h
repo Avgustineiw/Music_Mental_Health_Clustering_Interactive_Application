@@ -2,6 +2,7 @@
 #include "readFromCSV.h"
 #include "respondentToPoint.h"
 #include "k-means.h"
+#include "point.h"
 
 #include <vector>
 #include <iostream>

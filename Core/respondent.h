@@ -54,31 +54,31 @@ public:
     return _effect;
   }
 
-  void SetAge(int age) {
+  void SetAge(int& age) {
     this->_age = age;
   }
-  void SetHpd(double hpd) {
+  void SetHpd(double& hpd) {
     this->_hpd = hpd;
   }
-  void SetMusician(int musician) {
+  void SetMusician(int& musician) {
     this->_musician = musician;
   }
-  void SetFrequency(int frequency) {
+  void SetFrequency(int& frequency) {
     this->_frequency = frequency;
   }
-  void SetAnxiety(int anxiety) {
+  void SetAnxiety(int& anxiety) {
     this->_anxiety = anxiety;
   }
-  void SetDepression(int depression) {
+  void SetDepression(int& depression) {
     this->_depression = depression;
   }
-  void SetInsomnia(int insomnia) {
+  void SetInsomnia(int& insomnia) {
     this->_insomnia = insomnia;
   }
-  void SetOcd(int ocd) {
+  void SetOcd(int& ocd) {
     this->_ocd = ocd;
   }
-  void SetEffect(int effect) {
+  void SetEffect(int& effect) {
     this->_effect = effect;
   }
 
