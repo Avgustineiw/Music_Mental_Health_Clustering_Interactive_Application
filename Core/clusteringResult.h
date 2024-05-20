@@ -26,10 +26,10 @@ public:
   int GetClustersSize() const {
     return _clusters.size();
   }
-  Point GetPoint(int& i) const {
+  Point GetPoint(int i) const {
     return _points[i];
   }
-  Cluster GetCluster(int& i) const {
+  Cluster GetCluster(int i) const {
     return _clusters[i];
   }
 };
