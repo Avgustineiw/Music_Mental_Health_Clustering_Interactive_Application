@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Core/respondent.h"
+#include "Core/readFromCSV.h"
+#include "Core/point.h"
+#include "Core/header.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -67,11 +71,6 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->rb_medoids,   &QRadioButton::clicked, this, &MainWindow::setClusterization);
 
   connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::editClicked);
-
-
-  QMessageBox msgb;
-  msgb.setText("sdsd"); //TODO
-  //msgb.exec();
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -79,14 +78,14 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_actionOpen_triggered()
 {
-  QString path = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
+  INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
 
-  if (path.isEmpty()) {
+  if (INPUT_PATH.isEmpty()) {
     return;
   }
 
   try {
-    ModelView* newModel = new ModelView(path);
+    ModelView* newModel = new ModelView(INPUT_PATH);
 
     if (pModel_ != nullptr) {
       delete pModel_;
@@ -114,12 +113,14 @@ void MainWindow::on_actionOpen_triggered()
       ui->pb_clearData->setEnabled(true);
     }
 
-  }
+    InitializeProgram(INPUT_PATH);
+
+    }
   catch (const std::invalid_argument& e) {
     QString e_msg = e.what();
 
     QMessageBox msgb;
-    msgb.setText(e_msg + ": " + path);
+    msgb.setText(e_msg + ": " + INPUT_PATH);
     msgb.exec();
   }
   catch (...) {
