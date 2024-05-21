@@ -17,7 +17,7 @@ void ReadFromCSV(string& CSV_PATH, vector<vector<string>>& data)
   csv.open(CSV_PATH, ifstream::in);
 
   if (!csv.is_open()) {
-    throw std::runtime_error("Failed to open csv file");
+    throw runtime_error("Failed to open csv file");
     return;
   }
 

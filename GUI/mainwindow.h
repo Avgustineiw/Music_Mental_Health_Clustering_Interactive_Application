@@ -10,6 +10,7 @@
 #include "rightaligneddelegate.h"
 
 #include "Core/point.h"
+#include "Core/clusteringResult.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -45,13 +46,13 @@ private:
   ProxyModel*           pProxy_;
   RightAlignedDelegate* pDelegate_;
 
-  string               INPUT_PATH;
-  string               OUTPUT_PATH = "data.csv";
+  QString               INPUT_PATH;
+  QString               OUTPUT_PATH = "data.csv";
 
   QGraphicsScene*       pScene_;
 
   QRadioButton*                selectedRb_;
-  QVector<QVector<QVariant>>   clusterData_;
-  QVector<Point>               dataPoints;
+  vector<Point>                dataPoints_; //put this into clustering algorithm as an input
+  ClusteringResult             clusterData_; //draw this on form #2
 };
 #endif // MAINWINDOW_H

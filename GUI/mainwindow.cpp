@@ -4,6 +4,8 @@
 #include "Core/readFromCSV.h"
 #include "Core/point.h"
 #include "Core/header.h"
+#include "Core/clusteringAlgorithm.h"
+#include "Core/k-means.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -113,9 +115,8 @@ void MainWindow::on_actionOpen_triggered()
       ui->pb_clearData->setEnabled(true);
     }
 
-    InitializeProgram(INPUT_PATH);
-
-    }
+    dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+  }
   catch (const std::invalid_argument& e) {
     QString e_msg = e.what();
 
@@ -171,24 +172,15 @@ void MainWindow::clusterize()
 
   }
   else if (type == "Sort by Medoids") {
-
+      KMeans clustering = {2, 10}; //first two variables should be presented by a user
+      clusterData_ = clustering.Run(dataPoints_);
   }
   else {
-    //pClusterType_ = new kMeans(pModel_->getData());
-    clusterData_.reserve(100);
-    int maxRange = 200;
-    for (size_t i = 0; i < 100; ++i)
-    {
-      int signX = (rand() % 2 == 0) ? 1 : -1;
-      int signY = (rand() % 2 == 0) ? 1 : -1;
 
-      clusterData_.push_back({(rand() % maxRange) * signX, (rand() % maxRange) * signY, (i + 1) % 5, i});
-
-    }
   }
   //TODO
   //pClusterType_->Run();
-  if (clusterData_.isEmpty()) {
+  if (clusterData_.GetClustersSize() == 0) {
       //message box - > error because data is empty
   }
   else {
@@ -220,7 +212,7 @@ void MainWindow::setClusterization()
 
 void MainWindow::displayClusterData()
 {
-  pScene_->clear();
+  /*pScene_->clear();
 
   size_t height = pScene_->height();
   size_t width  = pScene_->width();
@@ -245,7 +237,8 @@ void MainWindow::displayClusterData()
     point->setPos(width / 2  + clusterData_[i][0].toInt(),
                   height / 2 + clusterData_[i][1].toInt());
     pScene_->addItem(point);
-  }
+  }*/
+  return;
 }
 
 

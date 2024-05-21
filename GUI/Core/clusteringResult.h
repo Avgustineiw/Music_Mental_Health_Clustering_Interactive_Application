@@ -12,9 +12,18 @@ private:
   vector<Cluster> _clusters;
 
 public:
-  ClusteringResult(int iterations, vector<Point> points, vector<Cluster> clusters):
-                   _iterations(iterations), _points(points), _clusters(clusters) {};
+  ClusteringResult(int iterations = 0):
+                   _iterations(iterations) {};
   ~ClusteringResult() {};
+  void SetIterations(int iterations) {
+      this->_iterations = iterations;
+  }
+  void SetPoints(vector<Point> points) {
+      this->_points = points;
+  }
+  void SetClusters(vector<Cluster> clusters) {
+      this->_clusters = clusters;
+  }
 
   int GetIterations() const {
     return _iterations;
