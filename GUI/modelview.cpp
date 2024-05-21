@@ -8,8 +8,13 @@ ModelView::ModelView(QObject* parent)
   : QAbstractTableModel(parent)
 {}
 
+//ModelView::ModelView(const QVector<QVector<QVariant> >& _data, QObject* parent) //
+//{
+// this->data_ = _data;
+//}
 
-ModelView::ModelView(const QString& fileName, QObject* parent)
+
+ModelView::ModelView(const QString& fileName, QObject* parent) //
   : QAbstractTableModel(parent)
 {
   QFile file(fileName);
@@ -95,7 +100,7 @@ ModelView::ModelView(const QString& fileName, QObject* parent)
       }
       data_.append(row);
     }
-    file.close();
+    file.close(); 
   }
 }
 
@@ -140,4 +145,9 @@ QVariant ModelView::headerData(int section, Qt::Orientation orientation, int rol
     return header_[section];
   }
   return QVariant(section + 1);
+}
+
+const QVector<QVector<QVariant>>& ModelView::getData() const
+{
+  return data_;
 }

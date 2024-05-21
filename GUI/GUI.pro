@@ -12,12 +12,17 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     modelview.cpp \
-    proxymodel.cpp
+    proxymodel.cpp \
+    rightaligneddelegate.cpp
 
 HEADERS += \
+    Core/k-means.h \
+    Core/point.h \
+    Core/silhouette.h \
     mainwindow.h \
     modelview.h \
-    proxymodel.h
+    proxymodel.h \
+    rightaligneddelegate.h
 
 FORMS += \
     mainwindow.ui
