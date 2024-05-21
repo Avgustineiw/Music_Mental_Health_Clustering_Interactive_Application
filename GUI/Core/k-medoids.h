@@ -1,3 +1,4 @@
+
 #pragma once
 #include "point.h"
 #include "clusteringAlgorithm.h"
@@ -15,12 +16,11 @@
 using namespace std;
 
 
-class KMeans : public ClusteringAlgorithm
-{ 
+class KMedoids : public ClusteringAlgorithm
+{
 public:
-  KMeans(int cluster_cnt, int iterations):
-         ClusteringAlgorithm(cluster_cnt, iterations) {};
-  
+  KMedoids(int cluster_cnt, int iterations):
+           ClusteringAlgorithm(cluster_cnt, iterations) {};
   ClusteringResult Run(vector<Point>& points) override {
     _total_points = points.size();
 
@@ -70,8 +70,12 @@ public:
             sum_x += _clusters[i].GetPoint(j).GetX();
             sum_y += _clusters[i].GetPoint(j).GetY();
           }
-          _clusters[i].SetCentroidX(sum_x / clusterSize);
-          _clusters[i].SetCentroidY(sum_y / clusterSize);
+          sum_x = sum_x / clusterSize;
+          sum_y = sum_y / clusterSize;
+          
+          Point p = GetNearestPoint(points, sum_x, sum_y);
+          _clusters[i].SetCentroidX(p.GetX());
+          _clusters[i].SetCentroidY(p.GetY());
         }
       }
 
@@ -82,9 +86,9 @@ public:
     }
 
     ClusteringResult res = {_iterations};
-    res.SetClusters(_clusters);
     res.SetPoints(points);
-
+    res.SetClusters(_clusters);
+    
     // cout << Silhouette(_clusters, points) << '\n'; //terminal debug
     // for (size_t i = 0; i < _clusters.size(); i++) {
     //   cout << "Id: " <<_clusters[i].GetClusterId() << '\n';
@@ -92,7 +96,7 @@ public:
     //   cout << "Centroid X: " <<_clusters[i].GetCentroidX() << '\n';
     //   cout << "Centroid Y: " <<_clusters[i].GetCentroidY() << '\n';
     // }
-
+    
     return res;
-  }
+  };
 };

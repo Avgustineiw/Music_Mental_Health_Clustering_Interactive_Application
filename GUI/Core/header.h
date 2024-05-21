@@ -3,11 +3,11 @@
 #include "respondentToPoint.h"
 #include "k-means.h"
 #include "point.h"
+#include "k-medoids.h"
 
 #include <vector>
 #include <iostream>
 #include <ctime>
-#include <QString>
 
 vector<Point> InitializeProgram(string CSV_PATH)
 {
@@ -22,8 +22,8 @@ vector<Point> InitializeProgram(string CSV_PATH)
     data_points.push_back(respondentToPoint(respondents[i], i+1));
   }
 
+  // KMeans clustering = {2, 10}; //terminal debug
+  // clustering.Run(data_points);
+
   return data_points;
-  
-  //KMeans clustering = {2, 10, OUTPUT_PATH};
-  //clustering.Run(data_points);
 }
