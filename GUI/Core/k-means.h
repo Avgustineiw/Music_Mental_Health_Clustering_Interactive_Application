@@ -16,13 +16,10 @@ using namespace std;
 
 
 class KMeans : public ClusteringAlgorithm
-{
-private:
-  string _output_path;
-  
+{ 
 public:
-  KMeans(int cluster_cnt, int iterations, string output_path): 
-         ClusteringAlgorithm(cluster_cnt, iterations), _output_path(output_path) {};
+  KMeans(int cluster_cnt, int iterations):
+         ClusteringAlgorithm(cluster_cnt, iterations) {};
   
   ClusteringResult Run(vector<Point>& points) override {
     _total_points = points.size();
@@ -83,25 +80,10 @@ public:
       }
       iter++;
     }
-    
-    ofstream output(_output_path);
 
-    for (size_t i = 0; i < _total_points; i++) {
-      output << points[i].GetX() << "," << points[i].GetY() << "," << points[i].GetClusterId() << "," << points[i].GetPointId() << '\n';
-    }
-
-    output.close();
-
-    // for (size_t i = 0; i < _cluster_cnt; i++) {
-    //   cout << "cluster id: " << _clusters[i].GetClusterId() << '\n';
-    //   cout << "Amount of points: " << _clusters[i].GetClusterSize() << '\n';
-    //   cout << "Centroid X: " << _clusters[i].GetCentroidX() << '\n';
-    //   cout << "Centroid Y: " << _clusters[i].GetCentroidY() << "\n\n";
-    // }
-    
-    cout << Silhouette(_clusters, points);
-
-    ClusteringResult res = {_iterations, points, _clusters};
+    ClusteringResult res = {_iterations};
+    res.SetClusters(_clusters);
+    res.SetPoints(points);
     
     return res;
   }

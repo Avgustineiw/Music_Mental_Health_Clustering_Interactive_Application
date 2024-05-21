@@ -9,7 +9,7 @@
 #include <ctime>
 #include <QString>
 
-void InitializeProgram(QString INPUT_PATH, QString OUTPUT_PATH)
+vector<Point> InitializeProgram(string CSV_PATH)
 {
   vector<vector<string>> data;
   vector<Respondent> respondents;
@@ -21,7 +21,9 @@ void InitializeProgram(QString INPUT_PATH, QString OUTPUT_PATH)
   for (size_t i = 0; i < respondents.size(); i++) {
     data_points.push_back(respondentToPoint(respondents[i], i+1));
   }
+
+  return data_points;
   
-  KMeans clustering = {2, 10, OUTPUT_PATH};
-  clustering.Run(data_points);
+  //KMeans clustering = {2, 10, OUTPUT_PATH};
+  //clustering.Run(data_points);
 }
