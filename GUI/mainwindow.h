@@ -2,9 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QRadioButton>
+#include <QGraphicsScene>
 
 #include "modelview.h"
 #include "proxymodel.h"
+#include "rightaligneddelegate.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -22,13 +25,28 @@ public:
   ~MainWindow();
 
 private slots:
-  void on_pushButton_10_clicked();
-
   void on_actionOpen_triggered();
 
+  void addRow();
+  void removeRow();
+  void editCell();
+  void clearData();
+  void clusterize();
+  void editClicked(const QModelIndex& ind);
+
+  void setClusterization();
+  void displayClusterData();
+
 private:
-  Ui::MainWindow* ui;
-  ModelView*      pModel_;
-  ProxyModel*     pProxy_;
+  Ui::MainWindow*       ui;
+  ModelView*            pModel_;
+  ProxyModel*           pProxy_;
+  RightAlignedDelegate* pDelegate_;
+
+  QGraphicsScene*       pScene_;
+
+
+  QRadioButton*              selectedRb_;
+  QVector<QVector<QVariant>> clusterData_;
 };
 #endif // MAINWINDOW_H
