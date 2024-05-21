@@ -17,8 +17,17 @@ SOURCES += \
 
 HEADERS += \
     Core/k-means.h \
+    Core/header.h \
     Core/point.h \
     Core/silhouette.h \
+    Core/logger.h \
+    Core/point.h \
+    Core/readFromCSV.h \
+    Core/respondent.h \
+    Core/respondentToPoint.h \
+    Core/silhouette.h \
+    Core/clusteringAlgorithm.h \
+    Core/clusteringResult.h \
     mainwindow.h \
     modelview.h \
     proxymodel.h \

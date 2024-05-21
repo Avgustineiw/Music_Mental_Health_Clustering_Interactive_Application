@@ -7,12 +7,9 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <QString>
 
-const string CSV_PATH = "/Users/avgustine/Project_cpp/music_health_data.csv";
-const string OUTPUT_PATH = "/Users/avgustine/Project_cpp/output.csv";
-
-
-void InitializeProgram()
+void InitializeProgram(QString INPUT_PATH, QString OUTPUT_PATH)
 {
   vector<vector<string>> data;
   vector<Respondent> respondents;

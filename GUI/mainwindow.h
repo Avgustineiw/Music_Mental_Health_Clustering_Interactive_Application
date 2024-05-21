@@ -9,6 +9,8 @@
 #include "proxymodel.h"
 #include "rightaligneddelegate.h"
 
+#include "Core/point.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -43,10 +45,13 @@ private:
   ProxyModel*           pProxy_;
   RightAlignedDelegate* pDelegate_;
 
+  string               INPUT_PATH;
+  string               OUTPUT_PATH = "data.csv";
+
   QGraphicsScene*       pScene_;
 
-
-  QRadioButton*              selectedRb_;
-  QVector<QVector<QVariant>> clusterData_;
+  QRadioButton*                selectedRb_;
+  QVector<QVector<QVariant>>   clusterData_;
+  QVector<Point>               dataPoints;
 };
 #endif // MAINWINDOW_H

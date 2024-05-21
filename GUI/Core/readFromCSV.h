@@ -6,11 +6,12 @@
 #include <sstream>
 #include <string>
 #include <vector>
+//#include <QString>
 
 using namespace std;
 
 
-void ReadFromCSV(const string& CSV_PATH, vector<vector<string>>& data) 
+void ReadFromCSV(string& CSV_PATH, vector<vector<string>>& data)
 {
   ifstream csv;
   csv.open(CSV_PATH, ifstream::in);
