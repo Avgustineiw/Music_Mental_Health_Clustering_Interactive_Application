@@ -352,4 +352,3 @@ void MainWindow::on_pb_saveGraph_clicked()
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
   pixmap.save("clustering_result.png", "PNG", -1);
 }
-
