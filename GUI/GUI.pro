@@ -28,6 +28,7 @@ HEADERS += \
     Core/silhouette.h \
     Core/clusteringAlgorithm.h \
     Core/clusteringResult.h \
+    Core/k-medoids.h \
     mainwindow.h \
     modelview.h \
     proxymodel.h \

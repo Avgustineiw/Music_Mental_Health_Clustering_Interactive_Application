@@ -8,6 +8,8 @@
 #include <QStringList>
 // #include <QList>
 
+#include "Core/clusteringResult.h"
+
 class ModelView : public QAbstractTableModel
 {
   Q_OBJECT;
@@ -23,12 +25,13 @@ public:
   //TODO
   //void addRow(const QVector<QVariant>& rowData);
   //void deleteRow(const size_t idx);
-  const QVector<QVector<QVariant>>& getData() const; //hi
+  const QVector<QVector<QVariant>>& getData() const;
 
 private:
   QVector<QVector<QVariant>> data_;
   QStringList                header_ = {"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"};
   QString                    fileName_;
 };
+
 
 #endif // MODELVIEW_H

@@ -1,4 +1,3 @@
-
 #pragma once
 #include "point.h"
 #include "clusteringAlgorithm.h"

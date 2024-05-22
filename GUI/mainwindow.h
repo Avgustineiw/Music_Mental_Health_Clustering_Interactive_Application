@@ -9,8 +9,11 @@
 #include "proxymodel.h"
 #include "rightaligneddelegate.h"
 
+#include "Core/clusteringAlgorithm.h"
+#include "Core/k-means.h"
+#include "Core/k-medoids.h"
 #include "Core/point.h"
-#include "Core/clusteringResult.h"
+//#include "Core/.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -40,19 +43,28 @@ private slots:
   void setClusterization();
   void displayClusterData();
 
+  void on_pushButton_9_clicked();
+
+private:
+  std::vector<Point>    convertModelDataToPoints(const QVector<QVector<QVariant>>& data);
+
 private:
   Ui::MainWindow*       ui;
   ModelView*            pModel_;
   ProxyModel*           pProxy_;
   RightAlignedDelegate* pDelegate_;
 
-  QString               INPUT_PATH;
-  QString               OUTPUT_PATH = "data.csv";
-
   QGraphicsScene*       pScene_;
 
-  QRadioButton*                selectedRb_;
-  vector<Point>                dataPoints_; //put this into clustering algorithm as an input
-  ClusteringResult             clusterData_; //draw this on form #2
+  QRadioButton*         selectedRb_;
+
+  ClusteringAlgorithm*  pClusterType_;
+  ClusteringResult      clusterData_;
+
+  std::vector<Point>    dataPoints_;
+
+  QString               INPUT_PATH;
+  QString               OUTPUT_PATH_CSV = "points.csv";
+  QString               OUTPUT_PATH_TXT = "data.txt";
 };
 #endif // MAINWINDOW_H

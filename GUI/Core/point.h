@@ -13,6 +13,7 @@ protected:
   int _clusterId;
 
 public:
+  Point() = default;
   Point(double x, double y, int pointId, int clusterId = 0): 
         _x(x), _y(y), _pointId(pointId), _clusterId(clusterId) {};
   virtual double GetX() const {

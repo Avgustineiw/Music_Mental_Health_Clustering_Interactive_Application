@@ -40,4 +40,12 @@ public:
   Cluster GetCluster(int i) const {
     return _clusters[i];
   }
+
+  vector<Point> GetPoints() {
+    return _points;
+  }
+
+  vector<Cluster> GetClusters() {
+    return _clusters;
+  }
 };

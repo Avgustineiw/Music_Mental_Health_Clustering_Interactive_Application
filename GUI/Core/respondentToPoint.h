@@ -13,7 +13,7 @@ const double OCD_WEIGTH = 1;
 const double EFFECT_WEIGTH = 100;
 
 
-Point respondentToPoint(Respondent& respondent, int id)
+Point respondentToPoint(const Respondent& respondent, int id)
 {
   Point point = {0, 0, id};
   double x = 0;

@@ -15,7 +15,7 @@ inline double Distance(const Point& p1, const Point& p2)
 }
 
 
-double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
+inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 {
   int size = points.size();
   vector<double> inner_mean, outer_mean;
