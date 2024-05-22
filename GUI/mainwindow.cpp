@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "Core/respondent.h"
-#include "Core/readFromCSV.h"
+
 #include "Core/point.h"
 #include "Core/header.h"
 #include "Core/clusteringAlgorithm.h"
@@ -28,25 +27,40 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tabWidget->setCurrentIndex(0);
 
   //set up model view
-  pModel_    = new ModelView;
-  pProxy_    = new ProxyModel;
-  pDelegate_ = new RightAlignedDelegate;
+  pModel_        = new ModelView;
+
+  pModel_->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
+
+  pProxy_        = new ProxyModel;
+  pDelegate_     = new RightAlignedDelegate;
+
+  pModelCluster_ = new ModelView;
+
+  pModelCluster_->setHeader({"X coordinate", "Y coordinate", "Cluster"});
+
+  pProxyCluster_ = new ProxyModel;
 
   pProxy_->setSourceModel(pModel_);
+  pProxyCluster_->setSourceModel(pModelCluster_);
 
+  //tableView
   ui->tableView->setItemDelegate(pDelegate_);
   ui->tableView->setModel(pProxy_);
   ui->tableView->setSortingEnabled(true);
   ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+  //tableView_clusterize
+  ui->tableView_clusterize->reset();
+  ui->tableView_clusterize->setModel(pProxyCluster_);
+  ui->tableView_clusterize->setSortingEnabled(true);
+  ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
   //set up graphics view
   pScene_ = new QGraphicsScene(this);
-  pScene_->setSceneRect(0, 0, 620, 480);
+  pScene_->setSceneRect(0, 0, 850, 700);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
   ui->graphicsView->setFixedSize(pScene_->sceneRect().size().toSize());
-
-
 
   //set up menu
   //ui->menubar->actions().at(1)->menu();
@@ -64,6 +78,10 @@ MainWindow::MainWindow(QWidget *parent)
   ui->pb_editCell->setEnabled(false);
   ui->pb_clearData->setEnabled(false);
   ui->pb_clusterize->setEnabled(false);
+
+  ui->pb_saveGraph->setEnabled(false);
+  ui->pb_saveResults->setEnabled(false);
+  ui->pb_compare->setEnabled(false);
 
   //signals and slots
   connect(ui->pb_addRow,     &QPushButton::clicked, this, &MainWindow::addRow);
@@ -96,23 +114,19 @@ void MainWindow::on_actionOpen_triggered()
     if (pModel_ != nullptr) {
       delete pModel_;
     }
+    newModel->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
     pModel_ = newModel;
 
     if (pModel_) {
 //delete pProxy_;
 //pProxy_ = new ProxyModel;
 
+      //tableView
       ui->tableView->reset();
       pProxy_->setSourceModel(pModel_);
       ui->tableView->setModel(pProxy_);
       ui->tableView->setSortingEnabled(true);
       ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-      //CL
-      ui->tableView_clusterize->reset();
-      ui->tableView_clusterize->setModel(pProxy_);
-      ui->tableView_clusterize->setSortingEnabled(true);
-      ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
       ui->pb_removeRow->setEnabled(true);
       ui->pb_editCell->setEnabled(true);
@@ -173,7 +187,7 @@ void MainWindow::clusterize()
   }
   QString type = selectedRb_->text();
   //TODO: get number of clusters and iterations
-  int clusters   = 2;
+  int clusters   = 3;
   int iterations = 10;
 
   if (type == "Sort by Hierarchy") {
@@ -201,6 +215,28 @@ void MainWindow::clusterize()
   selectedRb_->setChecked(false);
   selectedRb_ = nullptr;
   ui->pb_clusterize->setEnabled(false);
+
+  ModelView* newModel2 = new ModelView(clusterData_.GetPoints());
+
+  if (pModelCluster_ != nullptr) {
+    delete pModelCluster_;
+  }
+  newModel2->setHeader({"X coordinate", "Y coordinate", "Cluster"});
+  pModelCluster_ = newModel2;
+  //newModel2->setHeader({"ID", "X coordinate", "Y coordinate", "Cluster"});
+
+  if (pModelCluster_)
+  {
+    //tableView_clusterize
+    ui->tableView_clusterize->reset();
+    pProxyCluster_->setSourceModel(pModelCluster_);
+    ui->tableView_clusterize->setModel(pProxyCluster_);
+    ui->tableView_clusterize->setSortingEnabled(true);
+    ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+  }
+  ui->pb_saveGraph->setEnabled(true);
+  ui->pb_saveResults->setEnabled(true);
+  ui->pb_compare->setEnabled(true);
 }
 
 
@@ -281,32 +317,38 @@ std::vector<Point> MainWindow::convertModelDataToPoints(const QVector<QVector<QV
 }
 */
 
-void MainWindow::on_pushButton_9_clicked()
+void MainWindow::on_pb_saveResults_clicked()
 {
-  if (clusterData_.GetPointsSize() > 1) { //check whether clusterization has been initialized, probably there's a better way of doing that
-      std::ofstream csv(OUTPUT_PATH_CSV.toStdString());
+  std::ofstream csv(OUTPUT_PATH_CSV.toStdString());
 
-      csv << "id, x, y, cluster" << '\n';
+  csv << "id, x, y, cluster" << '\n';
 
-      for (qsizetype i = 0; i < clusterData_.GetPointsSize(); i++) {
-        csv << clusterData_.GetPoint(i).GetPointId() << ",";
-        csv << clusterData_.GetPoint(i).GetX() << ",";
-        csv << clusterData_.GetPoint(i).GetY() << ",";
-        csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
-      }
+  for (qsizetype i = 0; i < clusterData_.GetPointsSize(); i++) {
+    csv << clusterData_.GetPoint(i).GetPointId() << ",";
+    csv << clusterData_.GetPoint(i).GetX() << ",";
+    csv << clusterData_.GetPoint(i).GetY() << ",";
+    csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
+  }
 
-      csv.close();
+  csv.close();
 
-      std::ofstream txt(OUTPUT_PATH_TXT.toStdString());
+  std::ofstream txt(OUTPUT_PATH_TXT.toStdString());
 
-      txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
+  txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
 
-      for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
-          txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
-          txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
-          txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
-          txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
-      }
-    }
+  for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
+      txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
+      txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
+      txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
+      txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
+  }
 }
 
+
+
+
+void MainWindow::on_pb_saveGraph_clicked()
+{
+  QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
+  pixmap.save("clustering_result.png", "PNG", -1);
+}

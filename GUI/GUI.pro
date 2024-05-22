@@ -33,6 +33,7 @@ HEADERS += \
     modelview.h \
     proxymodel.h \
     rightaligneddelegate.h
+    moc_predefs.h
 
 FORMS += \
     mainwindow.ui

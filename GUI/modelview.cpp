@@ -9,13 +9,25 @@ ModelView::ModelView(QObject* parent)
   : QAbstractTableModel(parent)
 {}
 
-//ModelView::ModelView(const QVector<QVector<QVariant> >& _data, QObject* parent) //
-//{
-// this->data_ = _data;
-//}
+//tableView_clusterize Tab2
+ModelView::ModelView(const vector<Point>& points, QObject* parent)
+  : QAbstractTableModel(parent)
+{
+  for (qsizetype i = 0; i < points.size(); ++i)
+  {
+    QVector<QVariant> row2;
 
+    //row2.append(QVariant(int(points[i].GetPointId())));
+    row2.append(QVariant(double(points[i].GetX())));
+    row2.append(QVariant(double(points[i].GetY())));
+    row2.append(QVariant(int(points[i].GetClusterId())));
 
-ModelView::ModelView(const QString& fileName, QObject* parent) //
+    data_.append(row2);
+  }
+}
+
+//tableView Tab1
+ModelView::ModelView(const QString& fileName, QObject* parent)
   : QAbstractTableModel(parent)
 {
   QFile file(fileName);
@@ -151,4 +163,9 @@ QVariant ModelView::headerData(int section, Qt::Orientation orientation, int rol
 const QVector<QVector<QVariant>>& ModelView::getData() const
 {
   return data_;
+}
+
+void ModelView::setHeader(const QStringList& headers)
+{
+  this->header_ = headers;
 }
