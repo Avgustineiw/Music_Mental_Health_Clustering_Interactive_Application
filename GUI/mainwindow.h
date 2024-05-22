@@ -12,6 +12,7 @@
 #include "Core/clusteringAlgorithm.h"
 #include "Core/k-means.h"
 #include "Core/k-medoids.h"
+#include "Core/point.h"
 //#include "Core/.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,6 +43,8 @@ private slots:
   void setClusterization();
   void displayClusterData();
 
+  void on_pushButton_9_clicked();
+
 private:
   std::vector<Point>    convertModelDataToPoints(const QVector<QVector<QVariant>>& data);
 
@@ -58,7 +61,10 @@ private:
   ClusteringAlgorithm*  pClusterType_;
   ClusteringResult      clusterData_;
 
+  std::vector<Point>    dataPoints_;
+
   QString               INPUT_PATH;
-  QString               OUTPUT_PATH = "data.csv";
+  QString               OUTPUT_PATH_CSV = "points.csv";
+  QString               OUTPUT_PATH_TXT = "data.txt";
 };
 #endif // MAINWINDOW_H

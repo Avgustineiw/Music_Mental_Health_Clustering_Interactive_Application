@@ -3,6 +3,7 @@
 #include <QFile>
 
 #include <stdexcept>
+#include "Core/clusteringResult.h"
 
 ModelView::ModelView(QObject* parent)
   : QAbstractTableModel(parent)

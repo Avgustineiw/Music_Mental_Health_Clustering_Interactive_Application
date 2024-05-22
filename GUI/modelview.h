@@ -8,6 +8,8 @@
 #include <QStringList>
 // #include <QList>
 
+#include "Core/clusteringResult.h"
+
 class ModelView : public QAbstractTableModel
 {
   Q_OBJECT;
@@ -30,5 +32,6 @@ private:
   QStringList                header_ = {"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"};
   QString                    fileName_;
 };
+
 
 #endif // MODELVIEW_H

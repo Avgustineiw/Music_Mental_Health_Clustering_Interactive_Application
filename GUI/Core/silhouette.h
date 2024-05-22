@@ -14,8 +14,8 @@ inline double Distance(const Point& p1, const Point& p2)
   return sqrt(pow(p1.GetX() - p2.GetX(), 2) + pow(p1.GetY() - p2.GetY(), 2));
 }
 
-/*
-double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
+
+inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 {
   int size = points.size();
   vector<double> inner_mean, outer_mean;
@@ -57,4 +57,3 @@ double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 
   return sil;
 }
-*/

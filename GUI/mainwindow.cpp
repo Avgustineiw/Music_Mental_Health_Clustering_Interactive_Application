@@ -6,6 +6,8 @@
 #include "Core/header.h"
 #include "Core/clusteringAlgorithm.h"
 #include "Core/k-means.h"
+#include "Core/header.h"
+#include "Core/silhouette.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -14,6 +16,8 @@
 #include <QGraphicsEllipseItem>
 
 #include <stdexcept>
+#include <fstream>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -35,14 +39,9 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableView->setSortingEnabled(true);
   ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-  ui->tableView_clusterize->setItemDelegate(pDelegate_);
-  ui->tableView_clusterize->setModel(pProxy_);
-  ui->tableView_clusterize->setSortingEnabled(true);
-  ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
   //set up graphics view
   pScene_ = new QGraphicsScene(this);
-  pScene_->setSceneRect(0, 0, 640, 480);
+  pScene_->setSceneRect(0, 0, 620, 480);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
   ui->graphicsView->setFixedSize(pScene_->sceneRect().size().toSize());
@@ -120,7 +119,8 @@ void MainWindow::on_actionOpen_triggered()
       ui->pb_clearData->setEnabled(true);
     }
 
-    //dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+    dataPoints_ = InitializeProgram(INPUT_PATH.toStdString()); //Load it here to prepare points for clusterization
+    //Otherwise you'd do it every time you clusterize data which is inefficient
   }
   catch (const std::invalid_argument& e) {
     QString e_msg = e.what();
@@ -174,7 +174,7 @@ void MainWindow::clusterize()
   QString type = selectedRb_->text();
   //TODO: get number of clusters and iterations
   int clusters   = 2;
-  int iterations = 40;
+  int iterations = 10;
 
   if (type == "Sort by Hierarchy") {
     //pClusterType_ = new AAA(clusters, iterations);
@@ -185,7 +185,7 @@ void MainWindow::clusterize()
   else {
     pClusterType_ = new KMeans(clusters, iterations);
   }
-  std::vector<Point> dataPoints_ = convertModelDataToPoints(pModel_->getData());
+  //std::vector<Point> dataPoints_ = convertModelDataToPoints(pModel_->getData());
 
   clusterData_ = pClusterType_->Run(dataPoints_);
 
@@ -226,37 +226,37 @@ void MainWindow::displayClusterData()
   size_t height = pScene_->height();
   size_t width  = pScene_->width();
 
-  for (size_t i = 0 ; i < clusterData_.GetPointsSize()/10; ++i)
+  for (qsizetype i = 0 ; i < clusterData_.GetClustersSize(); ++i)
   {
-    QGraphicsEllipseItem* point = new QGraphicsEllipseItem(0, 0, 5, 5);
-    // QPen pen = QPen(QColor(152, 69, 191));
+    int red = rand() % 255;
+    int blue = rand() % 255;
+    int green = rand() % 255;
+    QPen pen = QPen(QColor(red, blue, green));
 
-    // if (clusterData_.GetCluster(i).GetClusterId() == 1)
-    // {
-    //   pen = QPen(QColor(71, 69, 191));
-    // }
-    // else if  (clusterData_.GetCluster(i).GetClusterId() == 2)
-    // {
-    //   pen = QPen(QColor(69, 191, 132));
-    // }
-    // else if (clusterData_.GetCluster(i).GetClusterId() == 3)
-    // {
-    //   pen = QPen(QColor(191, 187, 69));
-    // }
-    // else
-    // {
-    //   pen = QPen(QColor(69, 187, 191));
-    // }
-    point->setBrush(Qt::red/*pen.brush()*/);
-    int x = clusterData_.GetPoint(i).GetX()*2;
-    int y = clusterData_.GetPoint(i).GetY()*2;
-    point->setPos(width / 2  + x,
-                  height / 2 + y);
-    pScene_->addItem(point);
+    for (qsizetype j = 0; j < clusterData_.GetPointsSize(); j++) {
+      if (clusterData_.GetPoint(j).GetClusterId() == i+1) {
+        QGraphicsEllipseItem* point = new QGraphicsEllipseItem(0, 0, 5, 5);
+        point->setBrush(pen.brush());
+        int x = clusterData_.GetPoint(j).GetX()*2;
+        int y = clusterData_.GetPoint(j).GetY()*2;
+        point->setPos(width / 3  + x,
+                      height / 4 + y);
+        pScene_->addItem(point);
+      }
+    }
+
+    QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
+    cluster_point->setBrush(pen.brush());
+    int x = clusterData_.GetCluster(i).GetCentroidX()*2;
+    int y = clusterData_.GetCluster(i).GetCentroidY()*2;
+    cluster_point->setPos(width / 3 + x,
+                          height / 4 + y);
+    pScene_->addItem(cluster_point);
   }
   return;
 }
-
+/* Obsolete function which didn't do anything for clusterization (you were converting respondents to clusters
+ * without actual clusterization)
 std::vector<Point> MainWindow::convertModelDataToPoints(const QVector<QVector<QVariant>>& data)
 {
   std::vector<Point> convertedData(data.size());
@@ -279,6 +279,34 @@ std::vector<Point> MainWindow::convertModelDataToPoints(const QVector<QVector<QV
 
   return convertedData;
 }
+*/
 
+void MainWindow::on_pushButton_9_clicked()
+{
+  if (clusterData_.GetPointsSize() > 1) { //check whether clusterization has been initialized, probably there's a better way of doing that
+      std::ofstream csv(OUTPUT_PATH_CSV.toStdString());
 
+      csv << "id, x, y, cluster" << '\n';
+
+      for (qsizetype i = 0; i < clusterData_.GetPointsSize(); i++) {
+        csv << clusterData_.GetPoint(i).GetPointId() << ",";
+        csv << clusterData_.GetPoint(i).GetX() << ",";
+        csv << clusterData_.GetPoint(i).GetY() << ",";
+        csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
+      }
+
+      csv.close();
+
+      std::ofstream txt(OUTPUT_PATH_TXT.toStdString());
+
+      txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
+
+      for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
+          txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
+          txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
+          txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
+          txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
+      }
+    }
+}
 
