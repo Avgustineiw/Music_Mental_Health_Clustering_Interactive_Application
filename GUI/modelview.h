@@ -23,7 +23,7 @@ public:
   //TODO
   //void addRow(const QVector<QVariant>& rowData);
   //void deleteRow(const size_t idx);
-  const QVector<QVector<QVariant>>& getData() const; //hi
+  const QVector<QVector<QVariant>>& getData() const;
 
 private:
   QVector<QVector<QVariant>> data_;

@@ -184,7 +184,7 @@ void DataToRespondent(vector<vector<string>>& data, vector<Respondent>& responde
       }
     }
 
-    Respondent tmp_respondent = {age, hpd, musician, frequency, anxiety, depression, insomnia, ocd,                                  effect};
+    Respondent tmp_respondent = {age, hpd, musician, frequency, anxiety, depression, insomnia, ocd, effect};
     respondents.push_back(tmp_respondent);
   }
   return;

@@ -35,9 +35,14 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableView->setSortingEnabled(true);
   ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+  ui->tableView_clusterize->setItemDelegate(pDelegate_);
+  ui->tableView_clusterize->setModel(pProxy_);
+  ui->tableView_clusterize->setSortingEnabled(true);
+  ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
   //set up graphics view
   pScene_ = new QGraphicsScene(this);
-  pScene_->setSceneRect(0, 0, 950, 700);
+  pScene_->setSceneRect(0, 0, 640, 480);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
   ui->graphicsView->setFixedSize(pScene_->sceneRect().size().toSize());
@@ -102,20 +107,20 @@ void MainWindow::on_actionOpen_triggered()
       pProxy_->setSourceModel(pModel_);
       ui->tableView->setModel(pProxy_);
       ui->tableView->setSortingEnabled(true);
-
       ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-      for (int i = 0; i < pModel_->rowCount(); ++i)
-      {
-        //ui->tableView->item
-        //pModel_->index(i, 1)
-      }
+
+      //CL
+      ui->tableView_clusterize->reset();
+      ui->tableView_clusterize->setModel(pProxy_);
+      ui->tableView_clusterize->setSortingEnabled(true);
+      ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
       ui->pb_removeRow->setEnabled(true);
       ui->pb_editCell->setEnabled(true);
       ui->pb_clearData->setEnabled(true);
     }
 
-    dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+    //dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
   }
   catch (const std::invalid_argument& e) {
     QString e_msg = e.what();
@@ -167,19 +172,23 @@ void MainWindow::clusterize()
     return;
   }
   QString type = selectedRb_->text();
+  //TODO: get number of clusters and iterations
+  int clusters   = 2;
+  int iterations = 40;
 
   if (type == "Sort by Hierarchy") {
-
+    //pClusterType_ = new AAA(clusters, iterations);
   }
   else if (type == "Sort by Medoids") {
-      KMeans clustering = {2, 10}; //first two variables should be presented by a user
-      clusterData_ = clustering.Run(dataPoints_);
+    pClusterType_ = new KMedoids(clusters, iterations);
   }
   else {
-
+    pClusterType_ = new KMeans(clusters, iterations);
   }
-  //TODO
-  //pClusterType_->Run();
+  std::vector<Point> dataPoints_ = convertModelDataToPoints(pModel_->getData());
+
+  clusterData_ = pClusterType_->Run(dataPoints_);
+
   if (clusterData_.GetClustersSize() == 0) {
       //message box - > error because data is empty
   }
@@ -212,33 +221,63 @@ void MainWindow::setClusterization()
 
 void MainWindow::displayClusterData()
 {
-  /*pScene_->clear();
+  pScene_->clear();
 
   size_t height = pScene_->height();
   size_t width  = pScene_->width();
 
-  for (size_t i = 0 ; i < clusterData_.size(); ++i)
+  for (size_t i = 0 ; i < clusterData_.GetPointsSize()/10; ++i)
   {
-    QGraphicsEllipseItem* point = new QGraphicsEllipseItem(0, 0, 10, 10);
-    QPen pen = QPen(QColor(152, 69, 191));
-    if (clusterData_[i][2] == 0)
-    {
-      pen = QPen(QColor(71, 69, 191));
-    }
-    else if  (clusterData_[i][2] == 1)
-    {
-      pen = QPen(QColor(69, 191, 132));
-    }
-    else if (clusterData_[i][2] == 2)
-    {
-      pen = QPen(QColor(191, 187, 69));
-    }
-    point->setPen(pen);
-    point->setPos(width / 2  + clusterData_[i][0].toInt(),
-                  height / 2 + clusterData_[i][1].toInt());
+    QGraphicsEllipseItem* point = new QGraphicsEllipseItem(0, 0, 5, 5);
+    // QPen pen = QPen(QColor(152, 69, 191));
+
+    // if (clusterData_.GetCluster(i).GetClusterId() == 1)
+    // {
+    //   pen = QPen(QColor(71, 69, 191));
+    // }
+    // else if  (clusterData_.GetCluster(i).GetClusterId() == 2)
+    // {
+    //   pen = QPen(QColor(69, 191, 132));
+    // }
+    // else if (clusterData_.GetCluster(i).GetClusterId() == 3)
+    // {
+    //   pen = QPen(QColor(191, 187, 69));
+    // }
+    // else
+    // {
+    //   pen = QPen(QColor(69, 187, 191));
+    // }
+    point->setBrush(Qt::red/*pen.brush()*/);
+    int x = clusterData_.GetPoint(i).GetX()*2;
+    int y = clusterData_.GetPoint(i).GetY()*2;
+    point->setPos(width / 2  + x,
+                  height / 2 + y);
     pScene_->addItem(point);
-  }*/
+  }
   return;
+}
+
+std::vector<Point> MainWindow::convertModelDataToPoints(const QVector<QVector<QVariant>>& data)
+{
+  std::vector<Point> convertedData(data.size());
+
+  for (qsizetype i = 0; i < data.size(); ++i)
+  {
+    Respondent rsp;
+    rsp.SetAge(data[i][0].toInt());
+    rsp.SetHpd(data[i][1].toDouble());
+    rsp.SetMusician(data[i][2].toInt());
+    rsp.SetFrequency(data[i][3].toInt());
+    rsp.SetAnxiety(data[i][4].toInt());
+    rsp.SetDepression(data[i][5].toInt());
+    rsp.SetInsomnia(data[i][6].toInt());
+    rsp.SetOcd(data[i][7].toInt());
+    rsp.SetEffect(data[i][8].toInt());
+
+    convertedData[i] = respondentToPoint(rsp, i);
+  }
+
+  return convertedData;
 }
 
 
