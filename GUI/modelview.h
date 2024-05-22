@@ -6,7 +6,8 @@
 #include <QVector>
 #include <QString>
 #include <QStringList>
-// #include <QList>
+
+#include "Core/point.h"
 
 class ModelView : public QAbstractTableModel
 {
@@ -14,12 +15,15 @@ class ModelView : public QAbstractTableModel
 public:
   explicit ModelView(QObject* parent = nullptr);
   ModelView(const QString& fileName, QObject* parent = nullptr);
+  ModelView(const vector<Point>& points, QObject* parent = nullptr);
+  ~ModelView() {};
 
   int rowCount   (const QModelIndex& parent = QModelIndex()) const override;
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
   QVariant data      (const QModelIndex& index, int role = Qt::DisplayRole) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+  void     setHeader  (const QStringList& headers);
   //TODO
   //void addRow(const QVector<QVariant>& rowData);
   //void deleteRow(const size_t idx);
@@ -27,8 +31,9 @@ public:
 
 private:
   QVector<QVector<QVariant>> data_;
-  QStringList                header_ = {"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"};
+  QStringList                header_;
   QString                    fileName_;
 };
+
 
 #endif // MODELVIEW_H

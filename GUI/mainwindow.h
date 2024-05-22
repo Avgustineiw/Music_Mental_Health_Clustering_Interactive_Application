@@ -10,9 +10,7 @@
 #include "rightaligneddelegate.h"
 
 #include "Core/clusteringAlgorithm.h"
-#include "Core/k-means.h"
-#include "Core/k-medoids.h"
-//#include "Core/.h"
+#include "Core/point.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -42,13 +40,19 @@ private slots:
   void setClusterization();
   void displayClusterData();
 
+  void on_pb_saveResults_clicked();
+
+  void on_pb_saveGraph_clicked();
+
 private:
   std::vector<Point>    convertModelDataToPoints(const QVector<QVector<QVariant>>& data);
 
 private:
   Ui::MainWindow*       ui;
   ModelView*            pModel_;
+  ModelView*            pModelCluster_;
   ProxyModel*           pProxy_;
+  ProxyModel*           pProxyCluster_;
   RightAlignedDelegate* pDelegate_;
 
   QGraphicsScene*       pScene_;
@@ -58,7 +62,10 @@ private:
   ClusteringAlgorithm*  pClusterType_;
   ClusteringResult      clusterData_;
 
+  std::vector<Point>    dataPoints_;
+
   QString               INPUT_PATH;
-  QString               OUTPUT_PATH = "data.csv";
+  QString               OUTPUT_PATH_CSV = "points.csv";
+  QString               OUTPUT_PATH_TXT = "data.txt";
 };
 #endif // MAINWINDOW_H
