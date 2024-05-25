@@ -7,6 +7,8 @@
 #include "Core/k-means.h"
 #include "Core/header.h"
 #include "Core/silhouette.h"
+#include "Core/getCurrentTime.h"
+#include "Core/getSetting.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -99,10 +101,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() { delete ui; }
 
-
 void MainWindow::on_actionOpen_triggered()
 {
-  INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
+  // INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
+  INPUT_PATH = QString::fromStdString(GetSetting(SETTINGS_PATH.toStdString(), 0));
+  QTextStream(stdout) << SETTINGS_PATH << "\n";
 
   if (INPUT_PATH.isEmpty()) {
     return;
@@ -192,12 +195,15 @@ void MainWindow::clusterize()
 
   if (type == "Sort by Hierarchy") {
     //pClusterType_ = new AAA(clusters, iterations);
+    Last_Algorithm_Used = "Hierarchy";
   }
   else if (type == "Sort by Medoids") {
     pClusterType_ = new KMedoids(clusters, iterations);
+    Last_Algorithm_Used = "K-Medoids";
   }
   else {
     pClusterType_ = new KMeans(clusters, iterations);
+    Last_Algorithm_Used = "K-Means";
   }
   //std::vector<Point> dataPoints_ = convertModelDataToPoints(pModel_->getData());
 
@@ -291,35 +297,11 @@ void MainWindow::displayClusterData()
   }
   return;
 }
-/* Obsolete function which didn't do anything for clusterization (you were converting respondents to clusters
- * without actual clusterization)
-std::vector<Point> MainWindow::convertModelDataToPoints(const QVector<QVector<QVariant>>& data)
-{
-  std::vector<Point> convertedData(data.size());
-
-  for (qsizetype i = 0; i < data.size(); ++i)
-  {
-    Respondent rsp;
-    rsp.SetAge(data[i][0].toInt());
-    rsp.SetHpd(data[i][1].toDouble());
-    rsp.SetMusician(data[i][2].toInt());
-    rsp.SetFrequency(data[i][3].toInt());
-    rsp.SetAnxiety(data[i][4].toInt());
-    rsp.SetDepression(data[i][5].toInt());
-    rsp.SetInsomnia(data[i][6].toInt());
-    rsp.SetOcd(data[i][7].toInt());
-    rsp.SetEffect(data[i][8].toInt());
-
-    convertedData[i] = respondentToPoint(rsp, i);
-  }
-
-  return convertedData;
-}
-*/
 
 void MainWindow::on_pb_saveResults_clicked()
 {
-  std::ofstream csv(OUTPUT_PATH_CSV.toStdString());
+    std::string OUTPUT_PATH_CSV = currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points";
+  std::ofstream csv(OUTPUT_PATH_CSV);
 
   csv << "id, x, y, cluster" << '\n';
 
@@ -332,7 +314,8 @@ void MainWindow::on_pb_saveResults_clicked()
 
   csv.close();
 
-  std::ofstream txt(OUTPUT_PATH_TXT.toStdString());
+  std::string OUTPUT_PATH_TXT = currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data";
+  std::ofstream txt(OUTPUT_PATH_TXT);
 
   txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
 
@@ -344,11 +327,9 @@ void MainWindow::on_pb_saveResults_clicked()
   }
 }
 
-
-
-
 void MainWindow::on_pb_saveGraph_clicked()
 {
+  QString OUTPUT_PATH = QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
-  pixmap.save("clustering_result.png", "PNG", -1);
+  pixmap.save(OUTPUT_PATH, "PNG", -1);
 }

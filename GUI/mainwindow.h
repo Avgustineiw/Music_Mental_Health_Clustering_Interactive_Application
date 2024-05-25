@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QRadioButton>
 #include <QGraphicsScene>
+#include <QDir>
 
 #include "modelview.h"
 #include "proxymodel.h"
@@ -65,7 +66,7 @@ private:
   std::vector<Point>    dataPoints_;
 
   QString               INPUT_PATH;
-  QString               OUTPUT_PATH_CSV = "points.csv";
-  QString               OUTPUT_PATH_TXT = "data.txt";
+  QString               SETTINGS_PATH = QDir::currentPath() + "/Source/settings.txt";
+  std::string           Last_Algorithm_Used = "NONE";
 };
 #endif // MAINWINDOW_H
