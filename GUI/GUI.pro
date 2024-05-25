@@ -29,12 +29,12 @@ HEADERS += \
     Core/clusteringAlgorithm.h \
     Core/clusteringResult.h \
     Core/k-medoids.h \
-    mainwindow.h \
-    modelview.h \
-    proxymodel.h \
+    Core/getCurrentTime.h \\
+    Core/getSetting.h \\
+    mainwindow.h \\
+    modelview.h \\
+    proxymodel.h \\
     rightaligneddelegate.h
-    moc_predefs.h
-
 FORMS += \
     mainwindow.ui
 
