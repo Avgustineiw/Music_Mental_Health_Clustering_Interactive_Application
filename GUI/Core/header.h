@@ -1,12 +1,9 @@
 #pragma once
 #include "readFromCSV.h"
 #include "respondentToPoint.h"
-#include "k-means.h"
 #include "point.h"
-#include "k-medoids.h"
 
 #include <vector>
-#include <iostream>
 #include <ctime>
 
 vector<Point> InitializeProgram(string CSV_PATH)

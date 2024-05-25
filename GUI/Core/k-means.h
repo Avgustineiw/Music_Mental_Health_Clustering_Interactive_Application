@@ -1,14 +1,9 @@
 #pragma once
 #include "point.h"
 #include "clusteringAlgorithm.h"
-#include "silhouette.h"
 #include "clusteringResult.h"
 
-#include <fstream>
-#include <iostream>
-#include <string>
 #include <vector>
-#include <cmath>
 #include <ctime>
 #include <vector>
 

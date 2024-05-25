@@ -9,6 +9,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    clusterpoint.cpp \
+    clusterscene.cpp \
     main.cpp \
     mainwindow.cpp \
     modelview.cpp \
@@ -31,6 +33,8 @@ HEADERS += \
     Core/k-medoids.h \
     Core/getCurrentTime.h \\
     Core/getSetting.h \\
+    clusterpoint.h \
+    clusterscene.h \
     mainwindow.h \\
     modelview.h \\
     proxymodel.h \\
