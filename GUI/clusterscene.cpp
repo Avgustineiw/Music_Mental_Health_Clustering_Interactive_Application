@@ -18,9 +18,9 @@ void ClusterScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     if (auto clusterPoint = qgraphicsitem_cast<CLusterPoint*>(item)) {
       //TODO
       QMessageBox pointInfo;
-      pointInfo.setText("fhdhshhs");
+      pointInfo.setText("fhdahshhs");
       pointInfo.setInformativeText(QString::number(clusterPoint->getId()));
-      pointInfo.exec();
+      // pointInfo.exec(); //All message boxes crash on mac for no valid reason. Didn't happen when it was launched in main.cpp
     }
 
   }

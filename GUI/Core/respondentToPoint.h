@@ -3,8 +3,8 @@
 #include "respondent.h"
 
 const double AGE_WEIGTH = 0.5;
-const double HPD_WEIGTH = 2;
-const double MUSICIAN_WEIGTH = -100;
+const double HPD_WEIGTH = 5;
+const double MUSICIAN_WEIGTH = 100;
 const double FREQUENCY_WEIGTH = 2;
 const double ANXIETY_WEIGTH = 1;
 const double DEPRESSION_WEIGTH = 1;

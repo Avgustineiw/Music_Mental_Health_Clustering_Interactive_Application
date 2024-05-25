@@ -3,7 +3,6 @@
 #include <QFile>
 
 #include <stdexcept>
-#include "Core/clusteringResult.h"
 
 ModelView::ModelView(QObject* parent)
   : QAbstractTableModel(parent)
@@ -13,7 +12,7 @@ ModelView::ModelView(QObject* parent)
 ModelView::ModelView(const vector<Point>& points, QObject* parent)
   : QAbstractTableModel(parent)
 {
-  for (qsizetype i = 0; i < points.size(); ++i)
+    for (unsigned int i = 0; i < points.size(); ++i)
   {
     QVector<QVariant> row2;
 

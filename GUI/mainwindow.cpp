@@ -9,30 +9,37 @@
 #include "Core/header.h"
 #include "Core/silhouette.h"
 #include "Core/getCurrentTime.h"
-#include "Core/getSetting.h"
 
 #include <QMessageBox>
 #include <QString>
 #include <QFileDialog>
 #include <QPen>
+#include <QApplication>
 
 #include <QGraphicsEllipseItem>
 #include "clusterpoint.h"
 
-#include <stdexcept>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
 {
+  if (SYSTEM == "Mac") {
+      INPUT_PATH = QDir::currentPath() + "/Source/music_health_data.csv"; //Mac
+  }
+  else if (SYSTEM == "Windows") {
+      INPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/music_health_data.csv"; //Windows;
+  }
+
   ui->setupUi(this);
 
   ui->tabWidget->setCurrentIndex(0);
 
   //set up model view
-  pModel_        = new ModelView(QString("D:\\Project_cpp\\GUI\build\\Desktop_Qt_6_7_0_MinGW_64_bit-Debug\\debug\\Source\\music_health_data.csv"));
+  pModel_        = new ModelView(INPUT_PATH);
 
   pModel_->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
 
@@ -62,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   //set up graphics view
   pScene_ = new ClusterScene(this);
-  pScene_->setSceneRect(0, 0, 850, 700);
+  pScene_->setSceneRect(0, 0, 720, 576);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
   ui->graphicsView->setFixedSize(pScene_->sceneRect().size().toSize());
@@ -80,7 +87,8 @@ MainWindow::MainWindow(QWidget *parent)
   selectedRb_ = nullptr;
   ui->le_numClusters->setText("4");
   ui->le_numIterations->setText("4");
-  scale_ = 1;
+  scaleX_ = 1;
+  scaleY_ = 1;
 
   ui->pb_removeRow->setEnabled(false);
   ui->pb_editCell->setEnabled(false);
@@ -89,7 +97,6 @@ MainWindow::MainWindow(QWidget *parent)
 
   ui->pb_saveGraph->setEnabled(false);
   ui->pb_saveResults->setEnabled(false);
-  ui->pb_compare->setEnabled(false);
 
   //signals and slots
   connect(ui->pb_addRow,     &QPushButton::clicked, this, &MainWindow::addRow);
@@ -107,52 +114,48 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::on_actionOpen_triggered()
-{
-  // INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
-  INPUT_PATH = QString::fromStdString(GetSetting(SETTINGS_PATH.toStdString(), 0));
+// void MainWindow::on_actionOpen_triggered()
+// {
+//   INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
 
-  if (INPUT_PATH.isEmpty()) {
-    return;
-  }
 
-  try {
-    ModelView* newModel = new ModelView(INPUT_PATH);
+//   try {
+//     ModelView* newModel = new ModelView(INPUT_PATH);
 
-    if (pModel_ != nullptr) {
-      delete pModel_;
-    }
-    newModel->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
-    pModel_ = newModel;
+//     if (pModel_ != nullptr) {
+//       delete pModel_;
+//     }
+//     newModel->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
+//     pModel_ = newModel;
 
-    if (pModel_) {
-//delete pProxy_;
-//pProxy_ = new ProxyModel;
+//     if (pModel_) {
+// //delete pProxy_;
+// //pProxy_ = new ProxyModel;
 
-      //tableView
-      ui->tableView->reset();
-      pProxy_->setSourceModel(pModel_);
-      ui->tableView->setModel(pProxy_);
-      ui->tableView->setSortingEnabled(true);
-      ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+//       //tableView
+//       ui->tableView->reset();
+//       pProxy_->setSourceModel(pModel_);
+//       ui->tableView->setModel(pProxy_);
+//       ui->tableView->setSortingEnabled(true);
+//       ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-      ui->pb_removeRow->setEnabled(true);
-      ui->pb_editCell->setEnabled(true);
-      ui->pb_clearData->setEnabled(true);
-    }
+//       ui->pb_removeRow->setEnabled(true);
+//       ui->pb_editCell->setEnabled(true);
+//       ui->pb_clearData->setEnabled(true);
+//     }
 
-  }
-  catch (const std::invalid_argument& e) {
-    QString e_msg = e.what();
+//   }
+//   catch (const std::invalid_argument& e) {
+//     QString e_msg = e.what();
 
-    QMessageBox msgb;
-    msgb.setText(e_msg + ": " + INPUT_PATH);
-    msgb.exec();
-  }
-  catch (...) {
-    // "Global" exception
-  }
-}
+//     QMessageBox msgb;
+//     msgb.setText(e_msg + ": " + INPUT_PATH);
+//     msgb.exec();
+//   }
+//   catch (...) {
+//     // "Global" exception
+//   }
+// }
 
 
 void MainWindow::addRow()
@@ -174,7 +177,7 @@ void MainWindow::editClicked(const QModelIndex& ind)
 {
   int row = pProxy_->mapToSource(ind).row();
   //pModel_->set
-  unsigned int idx = ui->tableView->selectionModel()->currentIndex().row();
+  //unsigned int idx = ui->tableView->selectionModel()->currentIndex().row();
   for (int i = 0; i < row; ++i)
     {
 
@@ -195,19 +198,21 @@ void MainWindow::clusterize()
   bool flag1 = false;
   bool flag2 = false;
 
-  uint32_t clusters   = ui->le_numClusters->text().toUInt(&flag1);
-  uint32_t iterations = ui->le_numClusters->text().toUInt(&flag2);
+  int32_t clusters   = ui->le_numClusters->text().toUInt(&flag1);
+  int32_t iterations = ui->le_numClusters->text().toUInt(&flag2);
   if (!flag1 || clusters > pModel_->rowCount() ||
       !flag2 || iterations > 1000) {
       return;
   }
-  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
-  int32_t minX = INT_MAX;
-  int32_t minY = INT_MAX;
-  int32_t maxX = INT_MIN;
-  int32_t maxY = INT_MIN;
 
-  for (qsizetype i = 0; i < dataPoints_.size(); ++i)
+  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+
+  minX = INT_MAX;
+  minY = INT_MAX;
+  maxX = INT_MIN;
+  maxY = INT_MIN;
+
+  for (uint32_t i = 0; i < dataPoints_.size(); ++i)
   {
     int32_t currX = dataPoints_[i].GetX();
     int32_t currY = dataPoints_[i].GetY();
@@ -220,21 +225,17 @@ void MainWindow::clusterize()
     if (currX > maxX) {
       maxX = currX;
     }
-    if (currY > maxX) {
+    if (currY > maxY) {
       maxY = currY;
     }
   }
 
   clusterBBox_.setRect(0, 0, maxX - minX, maxY - minY);
-  uint32_t sceneX = pScene_->sceneRect().height();
+  uint32_t sceneX = pScene_->sceneRect().width();
+  uint32_t sceneY = pScene_->sceneRect().height();
 
-  if (clusterBBox_.height() > clusterBBox_.width()) {
-    scale_ = sceneX / static_cast<double>(clusterBBox_.width());
-  }
-  else {
-    scale_ = sceneX / static_cast<double>(clusterBBox_.height());
-  }
-  scale_ /= 2.0;
+  scaleX_ = sceneX / static_cast<double>(clusterBBox_.width());
+  scaleY_ = sceneY / static_cast<double>(clusterBBox_.height());
 
   if (type == "Sort by Hierarchy") {
     //pClusterType_ = new AAA(clusters, iterations);
@@ -248,7 +249,6 @@ void MainWindow::clusterize()
     pClusterType_ = new KMeans(clusters, iterations);
     Last_Algorithm_Used = "K-Means";
   }
-  //std::vector<Point> dataPoints_ = convertModelDataToPoints(pModel_->getData());
 
   clusterData_ = pClusterType_->Run(dataPoints_);
 
@@ -285,7 +285,6 @@ void MainWindow::clusterize()
   }
   ui->pb_saveGraph->setEnabled(true);
   ui->pb_saveResults->setEnabled(true);
-  ui->pb_compare->setEnabled(true);
 }
 
 
@@ -306,18 +305,62 @@ void MainWindow::setClusterization()
 
 void MainWindow::displayClusterData()
 {
+  const uint32_t offsetLine = 7;
+  const uint32_t offset = 10;
   pScene_->clear();
 
   unsigned int height = pScene_->height();
   unsigned int width  = pScene_->width();
-  uint32_t offSetX = 00;
-  uint32_t offSetY = 35;
-  pScene_->addLine(offSetX, offSetY,
-                   offSetX, height - offSetY,
-                   QPen(Qt::white));
-  pScene_->addLine(offSetX, height - offSetY,
-                   width - offSetX, height - offSetY,
-                   QPen(Qt::white));
+
+  QPen line_color = QColor(255, 255, 255, 50);
+
+
+  for (qsizetype i = 1; i < 8; i++) {
+    pScene_->addLine(0, height/7*i - offsetLine,
+                     width, height/7*i - offsetLine,
+                     line_color);
+  }
+
+
+  for (qsizetype i = 1; i < 5; i++) {
+    pScene_->addLine(offsetLine + width/5*i, 0,
+                     offsetLine + width/5*i, height,
+                     line_color);
+  }
+  pScene_->addLine(offsetLine, 0,
+                   offsetLine, height,
+                   line_color);
+
+
+  //TODO: maybe add it so the number shifts depending on the amount of digits in it.
+  //x-axis numbers look ugly and the right-most one can go offscreen if it's 4 digits
+  QGraphicsTextItem* text0 = pScene_->addText("0");
+  text0->setPos(offsetLine, height - 28);
+  QGraphicsTextItem* text1x = pScene_->addText(QString::number(maxX/5));
+  QGraphicsTextItem* text2x = pScene_->addText(QString::number(maxX/5*2));
+  QGraphicsTextItem* text3x = pScene_->addText(QString::number(maxX/5*3));
+  QGraphicsTextItem* text4x = pScene_->addText(QString::number(maxX/5*4));
+  QGraphicsTextItem* text5x = pScene_->addText(QString::number(maxX));
+  text1x->setPos(width/5 - 20, height - 28);
+  text2x->setPos(width/5*2 - 20, height - 28);
+  text3x->setPos(width/5*3 - 20, height - 28);
+  text4x->setPos(width/5*4 - 20, height - 28);
+  text5x->setPos(width - 28, height - 28);
+
+  QGraphicsTextItem* text1y = pScene_->addText(QString::number(maxY/7*6));
+  QGraphicsTextItem* text2y = pScene_->addText(QString::number(maxY/7*5));
+  QGraphicsTextItem* text3y = pScene_->addText(QString::number(maxY/7*4));
+  QGraphicsTextItem* text4y = pScene_->addText(QString::number(maxY/7*3));
+  QGraphicsTextItem* text5y = pScene_->addText(QString::number(maxY/7*2));
+  QGraphicsTextItem* text6y = pScene_->addText(QString::number(maxY/7));
+  QGraphicsTextItem* text7y = pScene_->addText(QString::number(maxY));
+  text1y->setPos(offsetLine, height/7 + offsetLine - 10);
+  text2y->setPos(offsetLine, height/7*2 + offsetLine - 10);
+  text3y->setPos(offsetLine, height/7*3 + offsetLine - 10);
+  text4y->setPos(offsetLine, height/7*4 + offsetLine - 10);
+  text5y->setPos(offsetLine, height/7*5 + offsetLine - 10);
+  text6y->setPos(offsetLine, height/7*6 + offsetLine - 10);
+  text7y->setPos(offsetLine, offsetLine - 10);
 
   for (qsizetype i = 0 ; i < clusterData_.GetClustersSize(); ++i)
   {
@@ -326,25 +369,24 @@ void MainWindow::displayClusterData()
     int green = rand() % 255;
     QPen pen = QPen(QColor(red, blue, green));
 
+
     for (qsizetype j = 0; j < clusterData_.GetPointsSize(); ++j) {
       if (clusterData_.GetPoint(j).GetClusterId() == i + 1) {
         //TODO
         CLusterPoint* point = new CLusterPoint(0, 0, 5, 5, clusterData_.GetPoint(j).GetPointId());
         point->setBrush(pen.brush());
-        int x = clusterData_.GetPoint(j).GetX() * scale_;
-        int y = clusterData_.GetPoint(j).GetY() * scale_;
-        point->setPos(width / 3  + x,
-                      height / 4 + y);
+        int x = clusterData_.GetPoint(j).GetX() * scaleX_;
+        int y = clusterData_.GetPoint(j).GetY() * scaleY_;
+        point->setPos(x + offset, height - y - offset);
         pScene_->addItem(point);
       }
     }
 
     QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
     cluster_point->setBrush(pen.brush());
-    int x = clusterData_.GetCluster(i).GetCentroidX() * scale_;
-    int y = clusterData_.GetCluster(i).GetCentroidY() * scale_;
-    cluster_point->setPos(width / 3  + x,
-                          height / 4 + y);
+    int x = clusterData_.GetCluster(i).GetCentroidX() * scaleX_;
+    int y = clusterData_.GetCluster(i).GetCentroidY() * scaleY_;
+    cluster_point->setPos(x + offset, height - y - offset);
     pScene_->addItem(cluster_point);
   }
   return;
@@ -352,42 +394,95 @@ void MainWindow::displayClusterData()
 
 void MainWindow::on_pb_saveResults_clicked()
 {
-  std::string OUTPUT_PATH_CSV = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points"; //Windows
-  //std::string OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Mac
+  if (SYSTEM == "Mac") {
+    OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data.txt"; //Mac
+    OUTPUT_PATH_CSV = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points.csv"; //Mac
+  }
+  else if (SYSTEM == "Windows") {
+    OUTPUT_PATH_TXT = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data.txt"; //Windows
+    OUTPUT_PATH_CSV = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points.csv"; //Windows
+  }
 
   std::ofstream csv(OUTPUT_PATH_CSV);
 
   csv << "id, x, y, cluster" << '\n';
 
   for (qsizetype i = 0; i < clusterData_.GetPointsSize(); i++) {
-      csv << clusterData_.GetPoint(i).GetPointId() << ",";
-      csv << clusterData_.GetPoint(i).GetX() << ",";
-      csv << clusterData_.GetPoint(i).GetY() << ",";
-      csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
-    }
+        csv << clusterData_.GetPoint(i).GetPointId() << ",";
+        csv << clusterData_.GetPoint(i).GetX() << ",";
+        csv << clusterData_.GetPoint(i).GetY() << ",";
+        csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
+  }
 
   csv.close();
 
-  std::string OUTPUT_PATH_TXT = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Windows
-  //std::string OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Mac
   std::ofstream txt(OUTPUT_PATH_TXT);
 
   txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
 
   for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
-      txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
-      txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
-      txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
-      txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
-    }
+    txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
+    txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
+    txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
+    txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
+  }
 }
 
 void MainWindow::on_pb_saveGraph_clicked()
 {
-  QString OUTPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/" + QString::fromStdString(currentDateTime())
-                        + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
+  if (SYSTEM == "Mac") {
+    OUTPUT_PATH_PNG = QDir::currentPath() + "/Source/" + QString::fromStdString(currentDateTime())
+                              + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png"; //Mac
+  }
+  else if (SYSTEM == "Windows") {
+    OUTPUT_PATH_PNG = QCoreApplication::applicationDirPath() + "/Source/" + QString::fromStdString(currentDateTime())
+                              + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png"; //Windows
+  }
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
-  pixmap.save(OUTPUT_PATH, "PNG", -1);
+  pixmap.save(OUTPUT_PATH_PNG, "PNG", -1);
 }
 
+void MainWindow::on_pb_compare_clicked()
+{
+  //TODO: Handle errors
+  QString name_1, name_2, name_3;
+  std::string val_1, val_2, val_3;
 
+  for (qsizetype i = 0; i < 3; i++) {
+    std::string line;
+    QString INPUT_PATH_DATA = QFileDialog::getOpenFileName(this, "Open first data", "", "TXT file (*.txt)");
+    std::ifstream data(INPUT_PATH_DATA.toStdString());
+
+    getline(data, line);
+    stringstream ss(line);
+
+    switch (i) {
+      case 0:
+        name_1 = INPUT_PATH_DATA;
+        for (qsizetype j = 0; j < 4; j++) {
+          ss >> val_1;
+        }
+        break;
+      case 1:
+        name_2 = INPUT_PATH_DATA;
+        for (qsizetype j = 0; j < 4; j++) {
+          ss >> val_2;
+        }
+        break;
+      case 2:
+        name_3 = INPUT_PATH_DATA;
+        for (qsizetype j = 0; j < 4; j++) {
+          ss >> val_3;
+        }
+        break;
+      }
+  }
+
+  QMessageBox msgb;
+  msgb.setWindowTitle("Results");
+  msgb.setInformativeText(name_1 + ":" + QString::fromStdString(val_1) + "\n"
+                          + name_2 + ":" + QString::fromStdString(val_2) + "\n"
+                          + name_3 + ":" + QString::fromStdString(val_3) + "\n");
+
+  msgb.exec();
+}

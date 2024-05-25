@@ -16,14 +16,14 @@ inline double Distance(const Point& p1, const Point& p2)
 
 inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 {
-  int size = points.size();
+  unsigned int size = points.size();
   vector<double> inner_mean, outer_mean;
     
-  for (size_t i = 0; i < size; i++) {
+  for (unsigned int i = 0; i < size; i++) {
     double inner_sum = 0; 
     vector<double> outer_sum(clusters.size(), 0.0);
 
-    for (size_t j = 0; j < size; j++) {
+    for (unsigned int j = 0; j < size; j++) {
       if (i != j) {
         if (points[i].GetClusterId() == points[j].GetClusterId()) {
           inner_sum += Distance(points[i], points[j]);
@@ -38,7 +38,7 @@ inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& p
     inner_sum = inner_sum/(clusters[points[i].GetClusterId() - 1].GetClusterSize() - 1);
     inner_mean.push_back(inner_sum);
 
-    for (size_t j = 0; j < outer_sum.size(); j++) {
+    for (unsigned int j = 0; j < outer_sum.size(); j++) {
       outer_sum[j] = outer_sum[j]/clusters[j].GetClusterSize();
     }
 
@@ -48,7 +48,7 @@ inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& p
 
   double sil = 0;
 
-  for (size_t i = 0; i < size; i++) {
+  for (unsigned int i = 0; i < size; i++) {
     sil += (outer_mean[i] - inner_mean[i])/max(inner_mean[i], outer_mean[i]);
   }
 

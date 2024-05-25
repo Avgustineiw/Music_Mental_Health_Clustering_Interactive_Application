@@ -20,7 +20,7 @@ public:
 
     vector<int> used_pointIds;
 
-    for (size_t i = 1; i < _cluster_cnt + 1; i++) {
+    for (unsigned int i = 1; i < _cluster_cnt + 1; i++) {
       while (true) {
         int index = rand() % _total_points;
 
@@ -34,12 +34,12 @@ public:
       }
     }
 
-    int iter = 1;
+    unsigned int iter = 1;
 
     while (true) {
       bool done = true;
 
-      for (size_t i = 0; i < _total_points; i++) {
+      for (unsigned int i = 0; i < _total_points; i++) {
         int currentClusterId = points[i].GetClusterId();
         int nearestClusterId = GetNearestClusterId(points[i]);
         
@@ -51,16 +51,16 @@ public:
         
       ClearClusters();
 
-      for (size_t i = 0; i < _total_points; i++) {
+      for (unsigned int i = 0; i < _total_points; i++) {
         _clusters[points[i].GetClusterId() - 1].SetPoint(points[i]);
       }
 
-      for (size_t i = 0; i < _cluster_cnt; i++) {
-        int clusterSize = _clusters[i].GetClusterSize();
+      for (unsigned int i = 0; i < _cluster_cnt; i++) {
+        unsigned int clusterSize = _clusters[i].GetClusterSize();
 
         double sum_x = 0, sum_y = 0;
         if (clusterSize > 0) {
-          for (size_t j = 0; j < clusterSize; j++) {
+          for (unsigned int j = 0; j < clusterSize; j++) {
             sum_x += _clusters[i].GetPoint(j).GetX();
             sum_y += _clusters[i].GetPoint(j).GetY();
           }
@@ -84,7 +84,7 @@ public:
     res.SetClusters(_clusters);
     
     // cout << Silhouette(_clusters, points) << '\n'; //terminal debug
-    // for (size_t i = 0; i < _clusters.size(); i++) {
+    // for (unsigned int i = 0; i < _clusters.size(); i++) {
     //   cout << "Id: " <<_clusters[i].GetClusterId() << '\n';
     //   cout << "Size: " <<_clusters[i].GetClusterSize() << '\n';
     //   cout << "Centroid X: " <<_clusters[i].GetCentroidX() << '\n';

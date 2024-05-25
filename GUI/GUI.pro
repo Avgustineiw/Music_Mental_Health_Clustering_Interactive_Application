@@ -32,7 +32,7 @@ HEADERS += \
     Core/clusteringResult.h \
     Core/k-medoids.h \
     Core/getCurrentTime.h \\
-    Core/getSetting.h \\
+    \\
     clusterpoint.h \
     clusterscene.h \
     mainwindow.h \\
