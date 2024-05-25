@@ -9,8 +9,6 @@
 
 #include "Core/point.h"
 
-#include "Core/clusteringResult.h"
-
 class ModelView : public QAbstractTableModel
 {
   Q_OBJECT;

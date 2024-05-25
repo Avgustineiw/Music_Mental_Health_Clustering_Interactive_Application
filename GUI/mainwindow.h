@@ -3,13 +3,15 @@
 
 #include <QMainWindow>
 #include <QRadioButton>
-#include <QGraphicsScene>
 #include <QDir>
 #include <QCoreApplication>
 
 #include "modelview.h"
 #include "proxymodel.h"
 #include "rightaligneddelegate.h"
+
+#include "clusterscene.h"
+#include "clusterpoint.h"
 
 #include "Core/clusteringAlgorithm.h"
 #include "Core/point.h"
@@ -57,7 +59,10 @@ private:
   ProxyModel*           pProxyCluster_;
   RightAlignedDelegate* pDelegate_;
 
-  QGraphicsScene*       pScene_;
+  ClusterScene*         pScene_;
+
+  QRect                 clusterBBox_;
+  double                scale_;
 
   QRadioButton*         selectedRb_;
 

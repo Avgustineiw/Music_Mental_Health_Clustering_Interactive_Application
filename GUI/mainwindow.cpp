@@ -5,6 +5,7 @@
 #include "Core/header.h"
 #include "Core/clusteringAlgorithm.h"
 #include "Core/k-means.h"
+#include "Core/k-medoids.h"
 #include "Core/header.h"
 #include "Core/silhouette.h"
 #include "Core/getCurrentTime.h"
@@ -14,7 +15,9 @@
 #include <QString>
 #include <QFileDialog>
 #include <QPen>
+
 #include <QGraphicsEllipseItem>
+#include "clusterpoint.h"
 
 #include <stdexcept>
 #include <fstream>
@@ -29,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tabWidget->setCurrentIndex(0);
 
   //set up model view
-  pModel_        = new ModelView;
+  pModel_        = new ModelView(QString("D:\\Project_cpp\\GUI\build\\Desktop_Qt_6_7_0_MinGW_64_bit-Debug\\debug\\Source\\music_health_data.csv"));
 
   pModel_->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
 
@@ -58,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableView_clusterize->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
   //set up graphics view
-  pScene_ = new QGraphicsScene(this);
+  pScene_ = new ClusterScene(this);
   pScene_->setSceneRect(0, 0, 850, 700);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
@@ -75,6 +78,9 @@ MainWindow::MainWindow(QWidget *parent)
   }
   //set up buttons
   selectedRb_ = nullptr;
+  ui->le_numClusters->setText("4");
+  ui->le_numIterations->setText("4");
+  scale_ = 1;
 
   ui->pb_removeRow->setEnabled(false);
   ui->pb_editCell->setEnabled(false);
@@ -105,7 +111,6 @@ void MainWindow::on_actionOpen_triggered()
 {
   // INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
   INPUT_PATH = QString::fromStdString(GetSetting(SETTINGS_PATH.toStdString(), 0));
-  QTextStream(stdout) << SETTINGS_PATH << "\n";
 
   if (INPUT_PATH.isEmpty()) {
     return;
@@ -136,8 +141,6 @@ void MainWindow::on_actionOpen_triggered()
       ui->pb_clearData->setEnabled(true);
     }
 
-    dataPoints_ = InitializeProgram(INPUT_PATH.toStdString()); //Load it here to prepare points for clusterization
-    //Otherwise you'd do it every time you clusterize data which is inefficient
   }
   catch (const std::invalid_argument& e) {
     QString e_msg = e.what();
@@ -171,7 +174,7 @@ void MainWindow::editClicked(const QModelIndex& ind)
 {
   int row = pProxy_->mapToSource(ind).row();
   //pModel_->set
-  size_t idx = ui->tableView->selectionModel()->currentIndex().row();
+  unsigned int idx = ui->tableView->selectionModel()->currentIndex().row();
   for (int i = 0; i < row; ++i)
     {
 
@@ -189,9 +192,49 @@ void MainWindow::clusterize()
     return;
   }
   QString type = selectedRb_->text();
-  //TODO: get number of clusters and iterations
-  int clusters   = 3;
-  int iterations = 10;
+  bool flag1 = false;
+  bool flag2 = false;
+
+  uint32_t clusters   = ui->le_numClusters->text().toUInt(&flag1);
+  uint32_t iterations = ui->le_numClusters->text().toUInt(&flag2);
+  if (!flag1 || clusters > pModel_->rowCount() ||
+      !flag2 || iterations > 1000) {
+      return;
+  }
+  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+  int32_t minX = INT_MAX;
+  int32_t minY = INT_MAX;
+  int32_t maxX = INT_MIN;
+  int32_t maxY = INT_MIN;
+
+  for (qsizetype i = 0; i < dataPoints_.size(); ++i)
+  {
+    int32_t currX = dataPoints_[i].GetX();
+    int32_t currY = dataPoints_[i].GetY();
+    if (currX < minX) {
+      minX = currX;
+    }
+    if (currY < minY) {
+      minY = currY;
+    }
+    if (currX > maxX) {
+      maxX = currX;
+    }
+    if (currY > maxX) {
+      maxY = currY;
+    }
+  }
+
+  clusterBBox_.setRect(0, 0, maxX - minX, maxY - minY);
+  uint32_t sceneX = pScene_->sceneRect().height();
+
+  if (clusterBBox_.height() > clusterBBox_.width()) {
+    scale_ = sceneX / static_cast<double>(clusterBBox_.width());
+  }
+  else {
+    scale_ = sceneX / static_cast<double>(clusterBBox_.height());
+  }
+  scale_ /= 2.0;
 
   if (type == "Sort by Hierarchy") {
     //pClusterType_ = new AAA(clusters, iterations);
@@ -265,8 +308,16 @@ void MainWindow::displayClusterData()
 {
   pScene_->clear();
 
-  size_t height = pScene_->height();
-  size_t width  = pScene_->width();
+  unsigned int height = pScene_->height();
+  unsigned int width  = pScene_->width();
+  uint32_t offSetX = 00;
+  uint32_t offSetY = 35;
+  pScene_->addLine(offSetX, offSetY,
+                   offSetX, height - offSetY,
+                   QPen(Qt::white));
+  pScene_->addLine(offSetX, height - offSetY,
+                   width - offSetX, height - offSetY,
+                   QPen(Qt::white));
 
   for (qsizetype i = 0 ; i < clusterData_.GetClustersSize(); ++i)
   {
@@ -275,12 +326,13 @@ void MainWindow::displayClusterData()
     int green = rand() % 255;
     QPen pen = QPen(QColor(red, blue, green));
 
-    for (qsizetype j = 0; j < clusterData_.GetPointsSize(); j++) {
-      if (clusterData_.GetPoint(j).GetClusterId() == i+1) {
-        QGraphicsEllipseItem* point = new QGraphicsEllipseItem(0, 0, 5, 5);
+    for (qsizetype j = 0; j < clusterData_.GetPointsSize(); ++j) {
+      if (clusterData_.GetPoint(j).GetClusterId() == i + 1) {
+        //TODO
+        CLusterPoint* point = new CLusterPoint(0, 0, 5, 5, clusterData_.GetPoint(j).GetPointId());
         point->setBrush(pen.brush());
-        int x = clusterData_.GetPoint(j).GetX()*2;
-        int y = clusterData_.GetPoint(j).GetY()*2;
+        int x = clusterData_.GetPoint(j).GetX() * scale_;
+        int y = clusterData_.GetPoint(j).GetY() * scale_;
         point->setPos(width / 3  + x,
                       height / 4 + y);
         pScene_->addItem(point);
@@ -289,9 +341,9 @@ void MainWindow::displayClusterData()
 
     QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
     cluster_point->setBrush(pen.brush());
-    int x = clusterData_.GetCluster(i).GetCentroidX()*2;
-    int y = clusterData_.GetCluster(i).GetCentroidY()*2;
-    cluster_point->setPos(width / 3 + x,
+    int x = clusterData_.GetCluster(i).GetCentroidX() * scale_;
+    int y = clusterData_.GetCluster(i).GetCentroidY() * scale_;
+    cluster_point->setPos(width / 3  + x,
                           height / 4 + y);
     pScene_->addItem(cluster_point);
   }
@@ -300,21 +352,24 @@ void MainWindow::displayClusterData()
 
 void MainWindow::on_pb_saveResults_clicked()
 {
-    std::string OUTPUT_PATH_CSV = currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points";
+  std::string OUTPUT_PATH_CSV = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points"; //Windows
+  //std::string OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Mac
+
   std::ofstream csv(OUTPUT_PATH_CSV);
 
   csv << "id, x, y, cluster" << '\n';
 
   for (qsizetype i = 0; i < clusterData_.GetPointsSize(); i++) {
-    csv << clusterData_.GetPoint(i).GetPointId() << ",";
-    csv << clusterData_.GetPoint(i).GetX() << ",";
-    csv << clusterData_.GetPoint(i).GetY() << ",";
-    csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
-  }
+      csv << clusterData_.GetPoint(i).GetPointId() << ",";
+      csv << clusterData_.GetPoint(i).GetX() << ",";
+      csv << clusterData_.GetPoint(i).GetY() << ",";
+      csv << clusterData_.GetPoint(i).GetClusterId() << '\n';
+    }
 
   csv.close();
 
-  std::string OUTPUT_PATH_TXT = currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data";
+  std::string OUTPUT_PATH_TXT = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Windows
+  //std::string OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data"; //Mac
   std::ofstream txt(OUTPUT_PATH_TXT);
 
   txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
@@ -324,12 +379,15 @@ void MainWindow::on_pb_saveResults_clicked()
       txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
       txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
       txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
-  }
+    }
 }
 
 void MainWindow::on_pb_saveGraph_clicked()
 {
-  QString OUTPUT_PATH = QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
+  QString OUTPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/" + QString::fromStdString(currentDateTime())
+                        + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
   pixmap.save(OUTPUT_PATH, "PNG", -1);
 }
+
+
