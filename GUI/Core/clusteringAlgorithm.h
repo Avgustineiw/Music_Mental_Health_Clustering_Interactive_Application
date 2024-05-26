@@ -74,6 +74,23 @@ protected:
     return NearestClusterId;
   }
 
+  double Distance(const Point& p1, const Point& p2) {
+    return sqrt((p1.GetX() - p2.GetX()) * (p1.GetX() - p2.GetX()) + (p1.GetY() - p2.GetY()) * (p1.GetY() - p2.GetY()));
+  }
+
+  double ClusterDistance(const Cluster& cluster1, const Cluster& cluster2) {
+        double MinDist = 100000;
+        for (Point i : cluster1.GetPoints()) {
+            for (Point j : cluster2.GetPoints()) {
+                double Dist = Distance(i, j);
+                if (Dist < MinDist) {
+                    MinDist = Dist;
+                }
+            }
+        }
+        return MinDist;
+    };
+
 public:
   ClusteringAlgorithm(int cluster_cnt, int iterations):  
                        _cluster_cnt(cluster_cnt), _iterations(iterations) {};

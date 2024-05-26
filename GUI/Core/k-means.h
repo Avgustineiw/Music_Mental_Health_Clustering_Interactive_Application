@@ -85,13 +85,13 @@ public:
     res.SetClusters(_clusters);
     res.SetPoints(points);
 
-    // cout << Silhouette(_clusters, points) << '\n'; //terminal debug
-    // for (size_t i = 0; i < _clusters.size(); i++) {
-    //   cout << "Id: " <<_clusters[i].GetClusterId() << '\n';
-    //   cout << "Size: " <<_clusters[i].GetClusterSize() << '\n';
-    //   cout << "Centroid X: " <<_clusters[i].GetCentroidX() << '\n';
-    //   cout << "Centroid Y: " <<_clusters[i].GetCentroidY() << '\n';
-    // }
+    cout << Silhouette(_clusters, points) << '\n'; //terminal debug
+    for (size_t i = 0; i < _clusters.size(); i++) {
+      cout << "Id: " <<_clusters[i].GetClusterId() << '\n';
+      cout << "Size: " <<_clusters[i].GetClusterSize() << '\n';
+      cout << "Centroid X: " <<_clusters[i].GetCentroidX() << '\n';
+      cout << "Centroid Y: " <<_clusters[i].GetCentroidY() << '\n';
+    }
 
     return res;
   }

@@ -81,6 +81,9 @@ public:
   Point GetPoint(int pointId) const {
     return _points[pointId];
   }
+  vector<Point> GetPoints() const {
+    return _points;
+  }
 
   int GetClusterSize() const {
     return _points.size();
@@ -101,4 +104,12 @@ public:
   void SetCentroidY(double y) {
     this->_centroid[1] = y;
   }
+
+  void merge(const Cluster& cluster2) {
+        //_points.insert(_points.end(), cluster2._points.begin(), cluster2._points.end());
+        for(Point i: cluster2._points) {
+          i.SetClusterId(_clusterId);
+          _points.push_back(i);
+        }
+    }
 };

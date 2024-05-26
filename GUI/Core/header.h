@@ -4,6 +4,7 @@
 #include "k-means.h"
 #include "point.h"
 #include "k-medoids.h"
+#include "hierarchy.h"
 
 #include <vector>
 #include <iostream>
@@ -22,8 +23,8 @@ vector<Point> InitializeProgram(string CSV_PATH)
     data_points.push_back(respondentToPoint(respondents[i], i+1));
   }
 
-  // KMeans clustering = {2, 10}; //terminal debug
-  // clustering.Run(data_points);
+   Hierarchy clustering = {2, 10}; //terminal debug
+   clustering.Run(data_points);
 
   return data_points;
 }
