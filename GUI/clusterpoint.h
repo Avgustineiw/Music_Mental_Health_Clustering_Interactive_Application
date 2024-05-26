@@ -11,7 +11,6 @@ public:
   CLusterPoint (qreal x, qreal y, qreal w, qreal h, uint32_t id, QGraphicsItem* parent = nullptr);
 
   uint32_t getId() const;
-
 };
 
 #endif // CLUSTERPOINT_H

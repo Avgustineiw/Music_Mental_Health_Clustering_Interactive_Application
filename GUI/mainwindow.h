@@ -50,6 +50,8 @@ private slots:
 
   void on_pb_compare_clicked();
 
+  void on_actionExit_triggered();
+
   private:
   std::vector<Point>    convertModelDataToPoints(const QVector<QVector<QVariant>>& data);
 

@@ -4,7 +4,6 @@
 #include "clusteringResult.h"
 
 #include <vector>
-#include <vector>
 
 using namespace std;
 

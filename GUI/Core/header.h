@@ -9,8 +9,8 @@
 vector<Point> InitializeProgram(string CSV_PATH)
 {
   vector<vector<string>> data;
-  vector<Respondent> respondents;
   vector<Point> data_points;
+  vector<Respondent> respondents;
 
   ReadFromCSV(CSV_PATH, data);
   DataToRespondent(data, respondents);

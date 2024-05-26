@@ -1,11 +1,11 @@
 #include "string"
-#include "getSetting.h"
 #include <iostream>
+#include "header.h"
 
-const std::string INPUT_PATH = "/Users/avgustine/Project_cpp/GUI/build/Source/settings.txt";
+const std::string INPUT_PATH = "/Users/avgustine/Project_cpp/GUI/build/Source/music_health_data.csv";
 
 
 int main()
 {
-  std::cout << GetSetting(INPUT_PATH, 0);
+  InitializeProgram(INPUT_PATH);
 }

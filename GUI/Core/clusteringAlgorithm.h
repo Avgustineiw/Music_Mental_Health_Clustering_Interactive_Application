@@ -24,7 +24,7 @@ protected:
   }
 
   Point GetNearestPoint(vector<Point>& points, double x, double y) {
-    double min_dist = 100000;
+    double min_dist = INT_MAX;
     int id = 0;
     for (unsigned int i = 0; i < points.size(); i++) {
       double dist = 0;
@@ -42,7 +42,7 @@ protected:
   }
 
   int GetNearestClusterId(Point& point) const {
-    double sum = 0, dist = 0, min_dist = 100000;
+    double sum = 0, dist = 0, min_dist = INT_MAX;
     int NearestClusterId = 0;
     
     sum += pow(_clusters[0].GetCentroidX() - point.GetX(), 2);

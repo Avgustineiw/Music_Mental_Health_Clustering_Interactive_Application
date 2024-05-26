@@ -7,7 +7,7 @@
 ClusterScene::ClusterScene (QObject* parent)
 {}
 
-void ClusterScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void ClusterScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
   QRectF rect = QRectF(event->scenePos(), QSizeF(1, 1));
   QList<QGraphicsItem*> itemsList = items(rect, Qt::IntersectsItemShape, Qt::DescendingOrder);
@@ -20,10 +20,10 @@ void ClusterScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
       QMessageBox pointInfo;
       pointInfo.setText("fhdahshhs");
       pointInfo.setInformativeText(QString::number(clusterPoint->getId()));
-      // pointInfo.exec(); //All message boxes crash on mac for no valid reason. Didn't happen when it was launched in main.cpp
+      pointInfo.exec();
     }
 
   }
-  QGraphicsScene::mouseMoveEvent(event);
+  QGraphicsScene::mousePressEvent(event);
 }
 

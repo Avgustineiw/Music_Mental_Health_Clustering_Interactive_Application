@@ -9,7 +9,7 @@ class ClusterScene : public QGraphicsScene
 public:
   ClusterScene (QObject* parent = nullptr);
 
-  void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 };
 
 #endif // CLUSTERSCENE_H

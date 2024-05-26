@@ -27,7 +27,7 @@ inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& p
       if (i != j) {
         if (points[i].GetClusterId() == points[j].GetClusterId()) {
           inner_sum += Distance(points[i], points[j]);
-          outer_sum[points[j].GetClusterId() - 1] = 1000000; //I'd like to fix it later
+          outer_sum[points[j].GetClusterId() - 1] = INT_MAX;
         }
         else {
           outer_sum[points[j].GetClusterId() - 1] += Distance(points[i], points[j]);

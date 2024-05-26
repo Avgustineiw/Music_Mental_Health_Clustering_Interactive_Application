@@ -1,6 +1,7 @@
 #include "modelview.h"
 
 #include <QFile>
+#include <QTextStream>
 
 #include <stdexcept>
 

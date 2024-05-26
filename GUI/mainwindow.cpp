@@ -22,6 +22,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   //set up graphics view
   pScene_ = new ClusterScene(this);
-  pScene_->setSceneRect(0, 0, 720, 576);
+  pScene_->setSceneRect(0, 0, 850, 700);
   // цвет сцены 30, 30, 30
   ui->graphicsView->setScene(pScene_);
   ui->graphicsView->setFixedSize(pScene_->sceneRect().size().toSize());
@@ -85,8 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
   }
   //set up buttons
   selectedRb_ = nullptr;
-  ui->le_numClusters->setText("4");
-  ui->le_numIterations->setText("4");
+  ui->le_numClusters->setText("2");
+  ui->le_numIterations->setText("5");
   scaleX_ = 1;
   scaleY_ = 1;
 
@@ -191,6 +192,8 @@ void MainWindow::clearData()
 
 void MainWindow::clusterize()
 {
+  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+
   if (!selectedRb_) {
     return;
   }
@@ -199,13 +202,14 @@ void MainWindow::clusterize()
   bool flag2 = false;
 
   int32_t clusters   = ui->le_numClusters->text().toUInt(&flag1);
-  int32_t iterations = ui->le_numClusters->text().toUInt(&flag2);
+  int32_t iterations = ui->le_numIterations->text().toUInt(&flag2);
   if (!flag1 || clusters > pModel_->rowCount() ||
       !flag2 || iterations > 1000) {
+        QMessageBox msgb;
+        msgb.setText("Invalid values");
+        msgb.exec();
       return;
   }
-
-  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
 
   minX = INT_MAX;
   minY = INT_MAX;
@@ -305,7 +309,7 @@ void MainWindow::setClusterization()
 
 void MainWindow::displayClusterData()
 {
-  const uint32_t offsetLine = 7;
+  const uint32_t offsetLine = 6;
   const uint32_t offset = 10;
   pScene_->clear();
 
@@ -331,9 +335,6 @@ void MainWindow::displayClusterData()
                    offsetLine, height,
                    line_color);
 
-
-  //TODO: maybe add it so the number shifts depending on the amount of digits in it.
-  //x-axis numbers look ugly and the right-most one can go offscreen if it's 4 digits
   QGraphicsTextItem* text0 = pScene_->addText("0");
   text0->setPos(offsetLine, height - 28);
   QGraphicsTextItem* text1x = pScene_->addText(QString::number(maxX/5));
@@ -341,11 +342,11 @@ void MainWindow::displayClusterData()
   QGraphicsTextItem* text3x = pScene_->addText(QString::number(maxX/5*3));
   QGraphicsTextItem* text4x = pScene_->addText(QString::number(maxX/5*4));
   QGraphicsTextItem* text5x = pScene_->addText(QString::number(maxX));
-  text1x->setPos(width/5 - 20, height - 28);
-  text2x->setPos(width/5*2 - 20, height - 28);
-  text3x->setPos(width/5*3 - 20, height - 28);
-  text4x->setPos(width/5*4 - 20, height - 28);
-  text5x->setPos(width - 28, height - 28);
+  text1x->setPos(width/5   - text1x->boundingRect().width() + 5, height - 28);
+  text2x->setPos(width/5*2 - text2x->boundingRect().width() + 5, height - 28);
+  text3x->setPos(width/5*3 - text3x->boundingRect().width() + 5, height - 28);
+  text4x->setPos(width/5*4 - text4x->boundingRect().width() + 5, height - 28);
+  text5x->setPos(width     - text5x->boundingRect().width()    , height - 28);
 
   QGraphicsTextItem* text1y = pScene_->addText(QString::number(maxY/7*6));
   QGraphicsTextItem* text2y = pScene_->addText(QString::number(maxY/7*5));
@@ -354,32 +355,28 @@ void MainWindow::displayClusterData()
   QGraphicsTextItem* text5y = pScene_->addText(QString::number(maxY/7*2));
   QGraphicsTextItem* text6y = pScene_->addText(QString::number(maxY/7));
   QGraphicsTextItem* text7y = pScene_->addText(QString::number(maxY));
-  text1y->setPos(offsetLine, height/7 + offsetLine - 10);
+  text1y->setPos(offsetLine, height/7   + offsetLine - 10);
   text2y->setPos(offsetLine, height/7*2 + offsetLine - 10);
   text3y->setPos(offsetLine, height/7*3 + offsetLine - 10);
   text4y->setPos(offsetLine, height/7*4 + offsetLine - 10);
   text5y->setPos(offsetLine, height/7*5 + offsetLine - 10);
   text6y->setPos(offsetLine, height/7*6 + offsetLine - 10);
-  text7y->setPos(offsetLine, offsetLine - 10);
+  text7y->setPos(offsetLine,              offsetLine - 5);
 
   for (qsizetype i = 0 ; i < clusterData_.GetClustersSize(); ++i)
   {
-    int red = rand() % 255;
-    int blue = rand() % 255;
+    int red   = rand() % 255;
+    int blue  = rand() % 255;
     int green = rand() % 255;
     QPen pen = QPen(QColor(red, blue, green));
 
-
-    for (qsizetype j = 0; j < clusterData_.GetPointsSize(); ++j) {
-      if (clusterData_.GetPoint(j).GetClusterId() == i + 1) {
-        //TODO
-        CLusterPoint* point = new CLusterPoint(0, 0, 5, 5, clusterData_.GetPoint(j).GetPointId());
+    for (qsizetype j = 0; j < clusterData_.GetCluster(i).GetClusterSize(); ++j) {
+        CLusterPoint* point = new CLusterPoint(0, 0, 5, 5, clusterData_.GetCluster(i).GetPoint(j).GetPointId());
         point->setBrush(pen.brush());
-        int x = clusterData_.GetPoint(j).GetX() * scaleX_;
-        int y = clusterData_.GetPoint(j).GetY() * scaleY_;
+        int x = clusterData_.GetCluster(i).GetPoint(j).GetX() * scaleX_;
+        int y = clusterData_.GetCluster(i).GetPoint(j).GetY() * scaleY_;
         point->setPos(x + offset, height - y - offset);
         pScene_->addItem(point);
-      }
     }
 
     QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
@@ -445,7 +442,7 @@ void MainWindow::on_pb_saveGraph_clicked()
 void MainWindow::on_pb_compare_clicked()
 {
   //TODO: Handle errors
-  QString name_1, name_2, name_3;
+  QString name_1, name_2, name_3, best_alg;
   std::string val_1, val_2, val_3;
 
   for (qsizetype i = 0; i < 3; i++) {
@@ -458,19 +455,19 @@ void MainWindow::on_pb_compare_clicked()
 
     switch (i) {
       case 0:
-        name_1 = INPUT_PATH_DATA;
+        name_1 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
         for (qsizetype j = 0; j < 4; j++) {
           ss >> val_1;
         }
         break;
       case 1:
-        name_2 = INPUT_PATH_DATA;
+        name_2 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
         for (qsizetype j = 0; j < 4; j++) {
           ss >> val_2;
         }
         break;
       case 2:
-        name_3 = INPUT_PATH_DATA;
+        name_3 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
         for (qsizetype j = 0; j < 4; j++) {
           ss >> val_3;
         }
@@ -478,11 +475,31 @@ void MainWindow::on_pb_compare_clicked()
       }
   }
 
-  QMessageBox msgb;
-  msgb.setWindowTitle("Results");
-  msgb.setInformativeText(name_1 + ":" + QString::fromStdString(val_1) + "\n"
-                          + name_2 + ":" + QString::fromStdString(val_2) + "\n"
-                          + name_3 + ":" + QString::fromStdString(val_3) + "\n");
+  double dval_1 = stod(val_1);
+  double dval_2 = stod(val_2);
+  double dval_3 = stod(val_3);
 
+  if (max(max(dval_1, dval_2), dval_3) == dval_1) {
+    best_alg = "first";
+  }
+  else if (max(max(dval_1, dval_2), dval_3) == dval_2) {
+    best_alg = "second";
+  }
+  else if (max(max(dval_1, dval_2), dval_3) == dval_3) {
+    best_alg = "third";
+  }
+
+  QMessageBox msgb;
+  msgb.setText(name_1 + ": " + QString::fromStdString(val_1) + "\n\n" +
+               name_2 + ": " + QString::fromStdString(val_2) + "\n\n" +
+               name_3 + ": " + QString::fromStdString(val_3) + "\n\n");
+  msgb.setInformativeText("The " + best_alg + " is the best, as it is closer to 1");
+  //TODO: rescale the box
   msgb.exec();
 }
+
+void MainWindow::on_actionExit_triggered()
+{
+  QCoreApplication::quit();
+}
+

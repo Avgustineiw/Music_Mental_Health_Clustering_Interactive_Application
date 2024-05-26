@@ -14,7 +14,10 @@ private:
 public:
   ClusteringResult(unsigned int iterations = 0):
                    _iterations(iterations) {};
-  ~ClusteringResult() {};
+  ~ClusteringResult() {
+      _points.clear();
+      _clusters.clear();
+  };
   void SetIterations(int iterations) {
       this->_iterations = iterations;
   }
