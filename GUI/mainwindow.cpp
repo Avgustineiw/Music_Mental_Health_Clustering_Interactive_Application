@@ -137,6 +137,47 @@ void MainWindow::addRow()
 
 void MainWindow::removeRow()
 {
+  String fileName = "///////"; 
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", "Cannot open file for reading");
+        return;
+    }
+
+    QStringList rows;
+    QTextStream in(&file);
+    while (!in.atEnd())
+    {
+        QString line = in.readLine();
+        rows.append(line);
+    }
+    file.close();
+
+    if (rows.isEmpty())
+    {
+        QMessageBox::information(this, "Info", "The CSV file is empty");
+        return;
+    }
+
+    rows.removeLast();
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", "Cannot open file for writing");
+        return;
+    }
+
+    QTextStream out(&file);
+    for (const QString &row : rows)
+    {
+        out << row << "\n";
+    }
+
+    file.close();
+
+    QMessageBox::information(this, "Info", "Last row removed successfully");
 
 }
 
