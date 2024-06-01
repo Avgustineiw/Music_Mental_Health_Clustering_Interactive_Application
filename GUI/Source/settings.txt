@@ -1,4 +1,4 @@
-INPUT_FILE = /Users/avgustine/Project_cpp/GUI/Source/music_health_data.csv
+INPUT_FILE = D:/Project_cpp/GUI/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/debug/Source/music_health_data.csv
 OUTPUT_FILE =
 HPD_WEIGTH = 2
 MUSICIAN_WEIGTH = -100
