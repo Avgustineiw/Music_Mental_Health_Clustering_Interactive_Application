@@ -6,6 +6,7 @@
 #include "Core/clusteringAlgorithm.h"
 #include "Core/k-means.h"
 #include "Core/k-medoids.h"
+#include "Core/hierarchy.h"
 #include "Core/header.h"
 #include "Core/silhouette.h"
 #include "Core/getCurrentTime.h"
@@ -28,12 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
 {
-  if (SYSTEM == "Mac") {
-      INPUT_PATH = QDir::currentPath() + "/Source/music_health_data.csv"; //Mac
-  }
-  else if (SYSTEM == "Windows") {
-      INPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/music_health_data.csv"; //Windows;
-  }
 
   ui->setupUi(this);
 
@@ -192,7 +187,7 @@ void MainWindow::clearData()
 
 void MainWindow::clusterize()
 {
-  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+  dataPoints_ = InitializeProgram(INPUT_PATH);
 
   if (!selectedRb_) {
     return;
@@ -242,7 +237,7 @@ void MainWindow::clusterize()
   scaleY_ = sceneY / static_cast<double>(clusterBBox_.height());
 
   if (type == "Sort by Hierarchy") {
-    //pClusterType_ = new AAA(clusters, iterations);
+    pClusterType_ = new Hierarchy(clusters, iterations);
     Last_Algorithm_Used = "Hierarchy";
   }
   else if (type == "Sort by Medoids") {
@@ -379,28 +374,23 @@ void MainWindow::displayClusterData()
         pScene_->addItem(point);
     }
 
-    QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
-    cluster_point->setBrush(pen.brush());
-    int x = clusterData_.GetCluster(i).GetCentroidX() * scaleX_;
-    int y = clusterData_.GetCluster(i).GetCentroidY() * scaleY_;
-    cluster_point->setPos(x + offset, height - y - offset);
-    pScene_->addItem(cluster_point);
+    if (Last_Algorithm_Used != "Hierarchy") {
+      QGraphicsEllipseItem* cluster_point = new QGraphicsEllipseItem(0, 0, 15, 15);
+      cluster_point->setBrush(pen.brush());
+      int x = clusterData_.GetCluster(i).GetCentroidX() * scaleX_;
+      int y = clusterData_.GetCluster(i).GetCentroidY() * scaleY_;
+      cluster_point->setPos(x + offset, height - y - offset);
+      pScene_->addItem(cluster_point);
+    }
   }
   return;
 }
 
 void MainWindow::on_pb_saveResults_clicked()
 {
-  if (SYSTEM == "Mac") {
-    OUTPUT_PATH_TXT = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data.txt"; //Mac
-    OUTPUT_PATH_CSV = QDir::currentPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points.csv"; //Mac
-  }
-  else if (SYSTEM == "Windows") {
-    OUTPUT_PATH_TXT = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "data.txt"; //Windows
-    OUTPUT_PATH_CSV = QCoreApplication::applicationDirPath().toStdString() + "/Source/" + currentDateTime() + "_" + Last_Algorithm_Used + "_" + "points.csv"; //Windows
-  }
-
-  std::ofstream csv(OUTPUT_PATH_CSV);
+  QString OUTPUT_PATH_TXT = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "data.txt";
+  QString OUTPUT_PATH_CSV = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "points.csv";
+  std::ofstream csv(OUTPUT_PATH_TXT.toStdString());
 
   csv << "id, x, y, cluster" << '\n';
 
@@ -413,30 +403,30 @@ void MainWindow::on_pb_saveResults_clicked()
 
   csv.close();
 
-  std::ofstream txt(OUTPUT_PATH_TXT);
+  std::ofstream txt(OUTPUT_PATH_CSV.toStdString());
 
-  txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << '\n';
+  txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << "\n\n";
 
   for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
     txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
-    txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize() << '\n';
-    txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
-    txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << "\n\n";
+    txt << "Size: " << clusterData_.GetCluster(i).GetClusterSize()  << '\n';
+    if (Last_Algorithm_Used != "Hierarchy") {
+      txt << "Centroid X: " << clusterData_.GetCluster(i).GetCentroidX() << '\n';
+      txt << "Centroid Y: " << clusterData_.GetCluster(i).GetCentroidY() << '\n';
+    }
+    txt << '\n';
   }
 }
 
 void MainWindow::on_pb_saveGraph_clicked()
 {
-  if (SYSTEM == "Mac") {
-    OUTPUT_PATH_PNG = QDir::currentPath() + "/Source/" + QString::fromStdString(currentDateTime())
-                              + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png"; //Mac
-  }
-  else if (SYSTEM == "Windows") {
-    OUTPUT_PATH_PNG = QCoreApplication::applicationDirPath() + "/Source/" + QString::fromStdString(currentDateTime())
-                              + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png"; //Windows
-  }
+  QString PATH = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
+  QFile file(PATH);
+
+  file.open(QIODevice::WriteOnly);
+
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
-  pixmap.save(OUTPUT_PATH_PNG, "PNG", -1);
+  pixmap.save(&file, "PNG", -1);
 }
 
 void MainWindow::on_pb_compare_clicked()

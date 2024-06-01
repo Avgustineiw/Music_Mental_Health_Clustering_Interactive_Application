@@ -32,7 +32,7 @@ HEADERS += \
     Core/clusteringResult.h \
     Core/k-medoids.h \
     Core/getCurrentTime.h \\
-    \\
+		Core/hierarchy.h \\
     clusterpoint.h \
     clusterscene.h \
     mainwindow.h \\
@@ -46,3 +46,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+  source.qrc

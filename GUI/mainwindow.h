@@ -78,10 +78,7 @@ private:
 
   std::string           Last_Algorithm_Used = "NONE";
 
-  QString               INPUT_PATH;
-  QString               OUTPUT_PATH_PNG;
-  std::string           OUTPUT_PATH_TXT;
-  std::string           OUTPUT_PATH_CSV;
+  QString               INPUT_PATH = ":/source/music_health_data.csv";
 
   int32_t               minX = INT_MAX;
   int32_t               minY = INT_MAX;

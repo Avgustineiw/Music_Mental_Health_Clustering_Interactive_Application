@@ -4,6 +4,8 @@
 #include "clusteringResult.h"
 
 #include <vector>
+#include <iostream>
+#include "silhouette.h"
 
 using namespace std;
 

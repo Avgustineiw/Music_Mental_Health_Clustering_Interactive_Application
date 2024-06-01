@@ -23,6 +23,10 @@ protected:
     }
   }
 
+  double Distance(Point A, Point B) {
+    return sqrt(pow(A.GetX() - B.GetX(), 2) + pow(A.GetY() - B.GetY(), 2));
+  }
+
   Point GetNearestPoint(vector<Point>& points, double x, double y) {
     double min_dist = INT_MAX;
     int id = 0;

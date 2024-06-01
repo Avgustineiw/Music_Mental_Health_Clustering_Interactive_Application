@@ -5,32 +5,33 @@
 #include <sstream>
 #include <string>
 #include <vector>
-//#include <QString>
+
+#include <QString>
+#include <QFile>
+#include <QStringList>
+#include <QTextStream>
 
 using namespace std;
 
 
-void ReadFromCSV(string& CSV_PATH, vector<vector<string>>& data)
+void ReadFromCSV(QString& CSV_PATH, vector<vector<string>>& data)
 {
-  ifstream csv;
-  csv.open(CSV_PATH, ifstream::in);
+  QFile csv(CSV_PATH);
 
-  if (!csv.is_open()) {
-    throw runtime_error("Failed to open csv file");
-    return;
-  }
+  if (csv.open(QIODevice::ReadOnly)) {
+    QTextStream stream(&csv);
 
-  string line, field;
+    while (!stream.atEnd()) {
+      string field;
+      vector<string> tmp_data;
+      QString line = stream.readLine();
+      stringstream ss_line(line.toStdString());
 
-  while (!csv.eof()) {
-    getline(csv, line);
-    stringstream ss_line(line);
-    vector<string> tmp_data;
-
-    while (getline(ss_line, line, ',')) {
-      tmp_data.push_back(line);
+      while (getline(ss_line, field, ',')) {
+          tmp_data.push_back(field);
+      }
+      data.push_back(tmp_data);
     }
-    data.push_back(tmp_data);
   }
 
   csv.close();
