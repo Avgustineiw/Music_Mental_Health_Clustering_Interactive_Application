@@ -5,7 +5,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
-//#include <QString>
+
+#include <QFile>
+#include <QString>
 
 using namespace std;
 
@@ -14,6 +16,12 @@ void ReadFromCSV(string& CSV_PATH, vector<vector<string>>& data)
 {
   ifstream csv;
   csv.open(CSV_PATH, ifstream::in);
+  QFile file(QString::fromStdString(CSV_PATH));
+
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    throw runtime_error("Failed to open csv file");
+    return;
+  }
 
   if (!csv.is_open()) {
     throw runtime_error("Failed to open csv file");

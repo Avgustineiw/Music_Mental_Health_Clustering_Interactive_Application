@@ -28,18 +28,21 @@ MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
 {
-  if (SYSTEM == "Mac") {
-      INPUT_PATH = QDir::currentPath() + "/Source/music_health_data.csv"; //Mac
-  }
-  else if (SYSTEM == "Windows") {
-      INPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/music_health_data.csv"; //Windows;
-  }
+  //if (SYSTEM == "Mac") {
+      //INPUT_PATH = QDir::currentPath() + "/Source/music_health_data.csv"; //Mac
+  // }
+  // else if (SYSTEM == "Windows") {
+      //INPUT_PATH = QCoreApplication::applicationDirPath() + "/Source/music_health_data.csv"; //Windows;
+  // }
+
+  INPUT_PATH = ":/dataset/Source/music_health_data.csv";
 
   ui->setupUi(this);
 
   ui->tabWidget->setCurrentIndex(0);
 
   //set up model view
+  //pModel_        = new ModelView(INPUT_PATH);
   pModel_        = new ModelView(INPUT_PATH);
 
   pModel_->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
@@ -192,7 +195,15 @@ void MainWindow::clearData()
 
 void MainWindow::clusterize()
 {
-  dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+  try {
+    dataPoints_ = InitializeProgram(INPUT_PATH.toStdString());
+  }
+  catch(const std::exception& e) {
+    QMessageBox msgb;
+    msgb.setText(QString::fromStdString(e.what()));
+    msgb.exec();
+    return;
+  }
 
   if (!selectedRb_) {
     return;
