@@ -75,7 +75,9 @@ protected:
   }
 
   double Distance(const Point& p1, const Point& p2) {
-    return sqrt((p1.GetX() - p2.GetX()) * (p1.GetX() - p2.GetX()) + (p1.GetY() - p2.GetY()) * (p1.GetY() - p2.GetY()));
+    double point1 = p1.GetX() - p2.GetX();
+    double point2 = p1.GetY() - p2.GetY();
+    return (point1) * (point1) + (point2) * (point2);
   }
 
   double ClusterDistance(const Cluster& cluster1, const Cluster& cluster2) {
