@@ -3,6 +3,9 @@
 #include "readFromCSV.h"
 #include "respondentToPoint.h"
 #include "point.h"
+#include "k-medoids.h"
+#include "hierarchy.h"
+#include "SLINK.h"
 
 #include <vector>
 #include <ctime>
