@@ -13,6 +13,7 @@ SOURCES += \
     clusterscene.cpp \
     main.cpp \
     mainwindow.cpp \
+    mmhdialog.cpp \
     modelview.cpp \
     proxymodel.cpp \
     rightaligneddelegate.cpp
@@ -36,11 +37,13 @@ HEADERS += \
     clusterpoint.h \
     clusterscene.h \
     mainwindow.h \\
+  mmhdialog.h \
     modelview.h \\
     proxymodel.h \\
     rightaligneddelegate.h
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    mmhdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

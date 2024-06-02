@@ -169,3 +169,57 @@ void ModelView::setHeader(const QStringList& headers)
 {
   this->header_ = headers;
 }
+
+
+void ModelView::addRow(const QVector<QVariant>& rowData)
+{
+  if (rowData.size() != this->columnCount()) {
+    return;
+  }
+  int rowCnt = this->rowCount();
+  this->insertRow(rowCnt);
+
+  // for (qsizetype column = 0; column < this->columnCount(); ++column)
+  // {
+  //   QModelIndex idx = this->index(rowCnt, column);
+  //   this->setData(idx, rowData[column], Qt::EditRole);
+  // }
+  this->beginInsertRows(QModelIndex(), rowCnt, rowCnt);
+  data_.append(rowData);
+  this->endInsertRows();
+  //this
+}
+
+void ModelView::deleteRow(const qsizetype& idxRow)
+{
+  if (idxRow < 0 || idxRow > this->rowCount()) {
+    return;
+  }
+  data_.removeAt(idxRow);
+  this->removeRow(idxRow);
+}
+
+void ModelView::editRow(const qsizetype& idxRow)
+{
+
+}
+
+QVector<QVariant> ModelView::getRow(const qsizetype& idxRow) const
+{
+  if (idxRow < 0 || idxRow > this->rowCount()) {
+    return {};
+  }
+  return data_[idxRow];
+}
+
+void ModelView::setRow(const qsizetype& idxRow, const QVector<QVariant>& rowData)
+{
+  if (idxRow < 0 || idxRow > this->rowCount() || rowData.size() != this->columnCount()) {
+    return;
+  }
+  for (qsizetype i = 0; i < rowData.size(); ++i)
+  {
+    data_[idxRow][i] = rowData[i];
+  }
+}
+

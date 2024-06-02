@@ -37,7 +37,7 @@ private slots:
   void editCell();
   void clearData();
   void clusterize();
-  void editClicked(const QModelIndex& ind);
+  void editRow();
 
   void setClusterization();
   void displayClusterData();
