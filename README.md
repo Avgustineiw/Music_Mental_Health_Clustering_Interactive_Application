@@ -4,7 +4,7 @@
 ####    1. Tab 1 - Data input and clustering
 ####    2. Tab 2 - Data output and cluster visualization
 ### TAB #1 interface: Data input and clustering
-![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB1.1.png)
+![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB1.2.png)
 #### This tab allows you to input your data, manage it and perform clustering operations.
 #### Features：
 #### 1. Data table:
@@ -28,7 +28,7 @@ On the right there are several buttons that allow the user to modify the data an
 ##### Clusterize Button: Executes the clustering process based on selected parameters.
 
 ### TAB #2 interface: Data output and cluster visualization
-![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB2.1.png)
+![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB2.2.png)
 #### _Shows the result of clustering_
 #### Features：
 #### 1. Clustered data table：
