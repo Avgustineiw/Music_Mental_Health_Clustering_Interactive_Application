@@ -17,7 +17,6 @@ ModelView::ModelView(const vector<Point>& points, QObject* parent)
   {
     QVector<QVariant> row2;
 
-    //row2.append(QVariant(int(points[i].GetPointId())));
     row2.append(QVariant(double(points[i].GetX())));
     row2.append(QVariant(double(points[i].GetY())));
     row2.append(QVariant(int(points[i].GetClusterId())));

@@ -4,11 +4,8 @@
 #include "silhouette.h"
 #include "clusteringResult.h"
 
-#include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
-#include <cmath>
 #include <ctime>
 #include <vector>
 #include <set>
@@ -17,6 +14,7 @@
 
 using namespace std;
 
+//Hierarchy (SLINK) clustering algorithm
 class SLINK : public ClusteringAlgorithm
 {
 public:
@@ -35,7 +33,7 @@ ClusteringResult Run(vector<Point>& points) override {
     }
 
     for (unsigned int i = 1; i < size; i++) {
-        for (int j = 0; j < i; j++) {
+        for (unsigned int j = 0; j < i; j++) {
             D[i][j] = Distance(points[i], points[j]);
         }
 
@@ -92,6 +90,7 @@ ClusteringResult Run(vector<Point>& points) override {
     set<int> uniqueIDs(clusterId.begin(), clusterId.end());
     unsigned int clusterId_cnt = uniqueIDs.size();
 
+    //O(N^3) worst case;
     while (clusterId_cnt > _cluster_cnt) {
         double minDist = INT_MAX;
         int clusterID1 = -1, clusterID2 = -1;
@@ -124,10 +123,10 @@ ClusteringResult Run(vector<Point>& points) override {
     for(Point i : points) {
         uniqueIDs2.insert(i.GetClusterId());
     }
-    for(int i : uniqueIDs2) {
+    for(unsigned int i : uniqueIDs2) {
         oldID_newID[i] = tmp++;
     }
-    for(int i = 0; i < size; i++) {
+    for(unsigned int i = 0; i < size; i++) {
         points[i].SetClusterId(oldID_newID[points[i].GetClusterId()]);
     }
 

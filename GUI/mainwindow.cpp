@@ -86,18 +86,13 @@ MainWindow::MainWindow(QWidget *parent)
   if (menuFile) {
     QAction* save = menuFile->actions().at(1);
     save->setEnabled(false);
-    //TODO
   }
-  //set up buttons
   selectedRb_ = nullptr;
   ui->le_numClusters->setText("2");
   ui->le_numIterations->setText("5");
   scaleX_ = 1;
   scaleY_ = 1;
 
-  // ui->pb_removeRow->setEnabled(false);
-  // ui->pb_editCell->setEnabled(false);
-  // ui->pb_clearData->setEnabled(false);
   ui->pb_clusterize->setEnabled(false);
 
   ui->pb_saveGraph->setEnabled(false);
@@ -113,8 +108,6 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->rb_hierarchy,  &QRadioButton::clicked, this, &MainWindow::setClusterization);
   connect(ui->rb_means,      &QRadioButton::clicked, this, &MainWindow::setClusterization);
   connect(ui->rb_medoids,    &QRadioButton::clicked, this, &MainWindow::setClusterization);
-
-  //connect(ui->tableView,     &QTableView::doubleClicked, this, &MainWindow::editClicked);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -126,7 +119,6 @@ void MainWindow::addRow()
     QVector<QVariant> row = dlg.getData();
     pModel_->addRow(row);
   }
-  //keep it at the end of the function;
   logger.log("Добавлена новая строка в csv файл", Logger::Level::INFO);
 }
 
@@ -137,14 +129,11 @@ void MainWindow::removeRow()
   if (modelRow >= 0 && modelRow < pModel_->rowCount()) {
       pModel_->removeRow(modelRow);
   }
-  //add the # of row;
   logger.log("Удалена строка в csv файле", Logger::Level::INFO);
 }
 
 void MainWindow::editCell()
 {
-
-  //add which cell what changed to what;
   logger.log("Изменена строка в csv файле", Logger::Level::INFO);
 }
 
@@ -161,15 +150,14 @@ void MainWindow::editRow()
       QVector<QVariant> row = dlg.getData();
       pModel_->editRow(modelRow, row);
     }
-
-    //emit QAbstractTableModel::dataChanged(selectedRow)
   }
-
+  logger.log("Изменена строка в csv файле", Logger::Level::INFO);
 }
 
 void MainWindow::clearData()
 {
   pModel_->clearData();
+  logger.log("Данные в csv файле удалены", Logger::Level::INFO);
 }
 
 void MainWindow::clusterize()
@@ -185,8 +173,8 @@ void MainWindow::clusterize()
 
   int32_t clusters   = ui->le_numClusters->text().toUInt(&flag1);
   int32_t iterations = ui->le_numIterations->text().toUInt(&flag2);
-  if (!flag1 || clusters > pModel_->rowCount() ||
-      !flag2 || iterations > 1000) {
+  if (!flag1 || clusters > pModel_->rowCount() || clusters < 1 ||
+      !flag2 || iterations > 1000 || iterations < 1) {
         QMessageBox msgb;
         msgb.setText("Invalid values");
         msgb.exec();
@@ -239,7 +227,11 @@ void MainWindow::clusterize()
   clusterData_ = pClusterType_->Run(dataPoints_);
 
   if (clusterData_.GetClustersSize() == 0) {
-      //message box - > error because data is empty
+    QMessageBox msgb;
+    msgb.setText("Нет данных для кластеризации");
+    msgb.exec();
+    logger.log("Ошибка при кластеризации" , Logger::Level::ERROR);
+    return;
   }
   else {
     displayClusterData();
@@ -258,11 +250,9 @@ void MainWindow::clusterize()
   }
   newModel2->setHeader({"X coordinate", "Y coordinate", "Cluster"});
   pModelCluster_ = newModel2;
-  //newModel2->setHeader({"ID", "X coordinate", "Y coordinate", "Cluster"});
 
   if (pModelCluster_)
   {
-    //tableView_clusterize
     ui->tableView_clusterize->reset();
     pProxyCluster_->setSourceModel(pModelCluster_);
     ui->tableView_clusterize->setModel(pProxyCluster_);

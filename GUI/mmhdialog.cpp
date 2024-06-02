@@ -50,9 +50,6 @@ bool MmhDialog::isValid() const
   if (ui->le_OCD->text().isEmpty() || ui->le_OCD->text().toInt() < 0 || ui->le_OCD->text().toInt() > 24) {
     return false;
   }
-  // if (!ui->le_Effect->text().isEmpty() || ui->le_Effect->text().toInt() < 0 || ui->le_HPD->text().toInt() > 24) {
-  //     return false;
-  // }
 
   return true;
 }

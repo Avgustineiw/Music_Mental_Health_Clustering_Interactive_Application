@@ -13,7 +13,7 @@ inline double Distance(const Point& p1, const Point& p2)
   return sqrt(pow(p1.GetX() - p2.GetX(), 2) + pow(p1.GetY() - p2.GetY(), 2));
 }
 
-
+//Silhouette algorithm for rating the quality of the algorithm
 inline double Silhouette(const vector<Cluster>& clusters, const vector<Point>& points)
 {
   unsigned int size = points.size();

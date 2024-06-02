@@ -12,7 +12,7 @@ const double INSOMNIA_WEIGTH = 1;
 const double OCD_WEIGTH = 1;
 const double EFFECT_WEIGTH = 100;
 
-
+//Project 8D points to 2D plane with specific weights
 Point respondentToPoint(const Respondent& respondent, int id)
 {
   Point point = {0, 0, id};

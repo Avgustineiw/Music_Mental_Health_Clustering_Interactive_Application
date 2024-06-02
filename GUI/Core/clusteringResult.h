@@ -3,7 +3,7 @@
 
 #include <vector>
 
-
+//Class for using clustering results in GUI
 class ClusteringResult
 {
 private:

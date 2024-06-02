@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+//Abstract class for handling clustering algorithms
 class ClusteringAlgorithm
 {
 protected:

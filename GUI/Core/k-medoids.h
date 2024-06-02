@@ -9,7 +9,7 @@
 
 using namespace std;
 
-
+//Clustering algorithm for KMedoids
 class KMedoids : public ClusteringAlgorithm
 {
 public:
@@ -83,14 +83,6 @@ public:
     ClusteringResult res = {_iterations};
     res.SetPoints(points);
     res.SetClusters(_clusters);
-    
-    // cout << Silhouette(_clusters, points) << '\n'; //terminal debug
-    // for (unsigned int i = 0; i < _clusters.size(); i++) {
-    //   cout << "Id: " <<_clusters[i].GetClusterId() << '\n';
-    //   cout << "Size: " <<_clusters[i].GetClusterSize() << '\n';
-    //   cout << "Centroid X: " <<_clusters[i].GetCentroidX() << '\n';
-    //   cout << "Centroid Y: " <<_clusters[i].GetCentroidY() << '\n';
-    // }
     
     return res;
   };
