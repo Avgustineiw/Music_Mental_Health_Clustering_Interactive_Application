@@ -46,7 +46,23 @@ On the left there are several buttons that allow the user to work with the outpu
    2. _Save Results: Saves the clustered data results as txt file (allows the user to choose the destination of the saved file)._
    3. _Compare Methods: Allows user to compare different clustering methods (user should choose three output files saved by "Save Results" button)._
 
+## How to use the app
+#### 1. Input data：
+When the application starts, the tab 1 is opened:
+   1. _Make sure tab 1 is opened._
+   2. _Use the data table to change your dataset. You can add, remove, or edit rows via buttons._
+#### 2. Select clustering parameters：
+   1. _Choose a clustering method from the available options (clusterize by hierarchy, means, medoids)._
+   2. _Enter the number of clusters you want to create._
+   3. _Enter the number of iterations for the clustering algorithm_
+   4. _Click the "Clusterize" button to perform the clustering._
+#### 3. View and Save Results：
+   1. _Navigate to tab 2 to view and save the results._
+   4. _Use the "Save Image" and "Save Results" buttons to save the output data (after clicked, choose the path to save the file)._
+   5. _Use the "Compare Methods" button to compare different clustering methods (after clicked, choose three files saved by button "Save Results")._
 
+## Summary
+### Using the following instuctions, user should be able to effectively use the Music & Mental Health interactive application to analyze and visualize the data.
 
 
 
