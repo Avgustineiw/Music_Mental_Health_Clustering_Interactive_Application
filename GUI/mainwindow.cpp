@@ -10,6 +10,7 @@
 #include "Core/header.h"
 #include "Core/silhouette.h"
 #include "Core/getCurrentTime.h"
+#include "Core/logger.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -25,10 +26,15 @@
 #include <sstream>
 #include <algorithm>
 
+auto &logger = Logger::getInstance();
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
 {
+  //logger
+  logger.setLevel(Logger::Level::DEBUG);
+  logger.log("Программа была открыта", Logger::Level::INFO);
 
   ui->setupUi(this);
 
@@ -110,63 +116,25 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() { delete ui; }
 
-// void MainWindow::on_actionOpen_triggered()
-// {
-//   INPUT_PATH = QFileDialog::getOpenFileName(this, "Open dataset", "", "CSV file (*.csv)");
-
-
-//   try {
-//     ModelView* newModel = new ModelView(INPUT_PATH);
-
-//     if (pModel_ != nullptr) {
-//       delete pModel_;
-//     }
-//     newModel->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
-//     pModel_ = newModel;
-
-//     if (pModel_) {
-// //delete pProxy_;
-// //pProxy_ = new ProxyModel;
-
-//       //tableView
-//       ui->tableView->reset();
-//       pProxy_->setSourceModel(pModel_);
-//       ui->tableView->setModel(pProxy_);
-//       ui->tableView->setSortingEnabled(true);
-//       ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-//       ui->pb_removeRow->setEnabled(true);
-//       ui->pb_editCell->setEnabled(true);
-//       ui->pb_clearData->setEnabled(true);
-//     }
-
-//   }
-//   catch (const std::invalid_argument& e) {
-//     QString e_msg = e.what();
-
-//     QMessageBox msgb;
-//     msgb.setText(e_msg + ": " + INPUT_PATH);
-//     msgb.exec();
-//   }
-//   catch (...) {
-//     // "Global" exception
-//   }
-// }
-
-
 void MainWindow::addRow()
 {
 
+  //keep it at the end of the function;
+  logger.log("Добавлена новая строка в csv файл", Logger::Level::INFO);
 }
 
 void MainWindow::removeRow()
 {
 
+  //add the # of row;
+  logger.log("Удалена строка в csv файл", Logger::Level::INFO);
 }
 
 void MainWindow::editCell()
 {
 
+  //add which cell what changed to what;
+  logger.log("Изменена строка в csv файле", Logger::Level::INFO);
 }
 
 void MainWindow::editClicked(const QModelIndex& ind)
@@ -284,6 +252,9 @@ void MainWindow::clusterize()
   }
   ui->pb_saveGraph->setEnabled(true);
   ui->pb_saveResults->setEnabled(true);
+
+
+  logger.log("Данные были кластеризированы " + Last_Algorithm_Used, Logger::Level::INFO);
 }
 
 
@@ -388,9 +359,10 @@ void MainWindow::displayClusterData()
 
 void MainWindow::on_pb_saveResults_clicked()
 {
-  QString OUTPUT_PATH_TXT = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "data.txt";
-  QString OUTPUT_PATH_CSV = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "points.csv";
-  std::ofstream csv(OUTPUT_PATH_TXT.toStdString());
+  QString dir_path = QFileDialog::getExistingDirectory();
+  QString OUTPUT_PATH_TXT = dir_path + "/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "data.txt";
+  QString OUTPUT_PATH_CSV = dir_path + "/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_" + "points.csv";
+  std::ofstream csv(OUTPUT_PATH_CSV.toStdString());
 
   csv << "id, x, y, cluster" << '\n';
 
@@ -403,9 +375,9 @@ void MainWindow::on_pb_saveResults_clicked()
 
   csv.close();
 
-  std::ofstream txt(OUTPUT_PATH_CSV.toStdString());
+  std::ofstream txt(OUTPUT_PATH_TXT.toStdString());
 
-  txt << "Quality of algorithm: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << "\n\n";
+  txt << "Quality of clusterization: " << Silhouette(clusterData_.GetClusters(), clusterData_.GetPoints()) << "\n\n";
 
   for (qsizetype i = 0; i < clusterData_.GetClustersSize(); i++) {
     txt << "Cluster: " << clusterData_.GetCluster(i).GetClusterId() << '\n';
@@ -416,53 +388,70 @@ void MainWindow::on_pb_saveResults_clicked()
     }
     txt << '\n';
   }
+  logger.log("Сохранены результаты кластеризации " + Last_Algorithm_Used, Logger::Level::INFO);
 }
 
 void MainWindow::on_pb_saveGraph_clicked()
 {
-  QString PATH = "Source/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
+  QString PATH = QFileDialog::getExistingDirectory() + "/" + QString::fromStdString(currentDateTime()) + "_" + QString::fromStdString(Last_Algorithm_Used) + "_result.png";
   QFile file(PATH);
 
   file.open(QIODevice::WriteOnly);
 
   QPixmap pixmap = ui->graphicsView->grab(ui->graphicsView->sceneRect().toRect());
   pixmap.save(&file, "PNG", -1);
+  logger.log("Сохранен график кластеризации " + Last_Algorithm_Used, Logger::Level::INFO);
 }
 
 void MainWindow::on_pb_compare_clicked()
 {
-  //TODO: Handle errors
   QString name_1, name_2, name_3, best_alg;
-  std::string val_1, val_2, val_3;
+  std::string val_1, val_2, val_3, check;
 
-  for (qsizetype i = 0; i < 3; i++) {
-    std::string line;
-    QString INPUT_PATH_DATA = QFileDialog::getOpenFileName(this, "Open first data", "", "TXT file (*.txt)");
-    std::ifstream data(INPUT_PATH_DATA.toStdString());
+  try {
+    for (qsizetype i = 0; i < 3; i++) {
+      std::string line;
+      QString INPUT_PATH_DATA = QFileDialog::getOpenFileName(this, "Open first data", "", "TXT file (*.txt)");
+      std::ifstream data(INPUT_PATH_DATA.toStdString());
 
-    getline(data, line);
-    stringstream ss(line);
-
-    switch (i) {
-      case 0:
-        name_1 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
-        for (qsizetype j = 0; j < 4; j++) {
-          ss >> val_1;
-        }
-        break;
-      case 1:
-        name_2 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
-        for (qsizetype j = 0; j < 4; j++) {
-          ss >> val_2;
-        }
-        break;
-      case 2:
-        name_3 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
-        for (qsizetype j = 0; j < 4; j++) {
-          ss >> val_3;
-        }
+      data >> check;
+      if (check != "Quality") {
+        throw std::invalid_argument("File without clustering results was chosen");
         break;
       }
+      getline(data, line);
+      stringstream ss(line);
+
+      switch (i) {
+        case 0:
+          name_1 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
+          for (qsizetype j = 0; j < 4; j++) {
+            ss >> val_1;
+          }
+          break;
+        case 1:
+          name_2 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
+          for (qsizetype j = 0; j < 4; j++) {
+            ss >> val_2;
+          }
+          break;
+        case 2:
+          name_3 = INPUT_PATH_DATA.mid(INPUT_PATH_DATA.lastIndexOf("/") + 1);
+          for (qsizetype j = 0; j < 4; j++) {
+            ss >> val_3;
+          }
+          break;
+      }
+    }
+  }
+  catch (const std::invalid_argument& e) {
+    QString e_msg = e.what();
+
+    QMessageBox msgb;
+    msgb.setText(e_msg);
+    msgb.exec();
+    logger.log("Ошибка при сравнении результатов кластеризации" , Logger::Level::ERROR);
+    return;
   }
 
   double dval_1 = stod(val_1);
@@ -484,12 +473,14 @@ void MainWindow::on_pb_compare_clicked()
                name_2 + ": " + QString::fromStdString(val_2) + "\n\n" +
                name_3 + ": " + QString::fromStdString(val_3) + "\n\n");
   msgb.setInformativeText("The " + best_alg + " is the best, as it is closer to 1");
-  //TODO: rescale the box
   msgb.exec();
+
+  logger.log("Сравнили результаты кластеризации", Logger::Level::INFO);
 }
 
 void MainWindow::on_actionExit_triggered()
 {
+  logger.log("Программа была закрыта", Logger::Level::INFO);
   QCoreApplication::quit();
 }
 

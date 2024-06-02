@@ -78,5 +78,4 @@ public:
   ClusteringAlgorithm(int cluster_cnt, int iterations):  
                        _cluster_cnt(cluster_cnt), _iterations(iterations) {};
   virtual ClusteringResult Run(vector<Point>& points) = 0;
-  //TODO
 };

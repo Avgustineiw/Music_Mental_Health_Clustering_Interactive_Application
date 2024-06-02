@@ -32,8 +32,6 @@ public:
   ~MainWindow();
 
 private slots:
-  //void on_actionOpen_triggered();
-
   void addRow();
   void removeRow();
   void editCell();
@@ -84,7 +82,5 @@ private:
   int32_t               minY = INT_MAX;
   int32_t               maxX = INT_MIN;
   int32_t               maxY = INT_MIN;
-
-  QString               SYSTEM = "Mac"; //Only takes strings "Mac" and "Windows"
 };
 #endif // MAINWINDOW_H

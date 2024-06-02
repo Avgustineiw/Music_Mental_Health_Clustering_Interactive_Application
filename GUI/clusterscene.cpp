@@ -17,13 +17,13 @@ void ClusterScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
     if (auto clusterPoint = qgraphicsitem_cast<CLusterPoint*>(item)) {
       //TODO
-      QMessageBox pointInfo;
-      pointInfo.setText("fhdahshhs");
-      pointInfo.setInformativeText(QString::number(clusterPoint->getId()));
-      pointInfo.exec();
+      // QMessageBox pointInfo;
+      // pointInfo.setText("fhdahshhs");
+      // pointInfo.setInformativeText(QString::number(clusterPoint->getId()));
+      // pointInfo.exec();
     }
 
   }
-  QGraphicsScene::mousePressEvent(event);
+  // QGraphicsScene::mousePressEvent(event);
 }
 
