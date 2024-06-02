@@ -12,6 +12,8 @@
 #include "Core/getCurrentTime.h"
 #include "Core/logger.h"
 
+#include "mmhdialog.h"
+
 #include <QMessageBox>
 #include <QString>
 #include <QFileDialog>
@@ -41,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tabWidget->setCurrentIndex(0);
 
   //set up model view
-  pModel_        = new ModelView(INPUT_PATH);
+  pModel_        = new ModelView(INPUT_PATH); //INPUT_PATH
 
   pModel_->setHeader({"Age", "HPD", "Musician", "Frequency", "Anxiety", "Depression", "Insomnia", "OCD", "Effect"});
 
@@ -92,9 +94,9 @@ MainWindow::MainWindow(QWidget *parent)
   scaleX_ = 1;
   scaleY_ = 1;
 
-  ui->pb_removeRow->setEnabled(false);
-  ui->pb_editCell->setEnabled(false);
-  ui->pb_clearData->setEnabled(false);
+  // ui->pb_removeRow->setEnabled(false);
+  // ui->pb_editCell->setEnabled(false);
+  // ui->pb_clearData->setEnabled(false);
   ui->pb_clusterize->setEnabled(false);
 
   ui->pb_saveGraph->setEnabled(false);
@@ -103,31 +105,37 @@ MainWindow::MainWindow(QWidget *parent)
   //signals and slots
   connect(ui->pb_addRow,     &QPushButton::clicked, this, &MainWindow::addRow);
   connect(ui->pb_removeRow,  &QPushButton::clicked, this, &MainWindow::removeRow);
-  connect(ui->pb_editCell,   &QPushButton::clicked, this, &MainWindow::editCell);
+  connect(ui->pb_editRow,    &QPushButton::clicked, this, &MainWindow::editRow);
   connect(ui->pb_clearData,  &QPushButton::clicked, this, &MainWindow::clearData);
   connect(ui->pb_clusterize, &QPushButton::clicked, this, &MainWindow::clusterize);
 
-  connect(ui->rb_hierarchy, &QRadioButton::clicked, this, &MainWindow::setClusterization);
-  connect(ui->rb_means,     &QRadioButton::clicked, this, &MainWindow::setClusterization);
-  connect(ui->rb_medoids,   &QRadioButton::clicked, this, &MainWindow::setClusterization);
+  connect(ui->rb_hierarchy,  &QRadioButton::clicked, this, &MainWindow::setClusterization);
+  connect(ui->rb_means,      &QRadioButton::clicked, this, &MainWindow::setClusterization);
+  connect(ui->rb_medoids,    &QRadioButton::clicked, this, &MainWindow::setClusterization);
 
-  connect(ui->tableView, &QTableView::doubleClicked, this, &MainWindow::editClicked);
+  //connect(ui->tableView,     &QTableView::doubleClicked, this, &MainWindow::editClicked);
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::addRow()
 {
-
+  MmhDialog dlg;
+  if (dlg.exec() == QDialog::DialogCode::Accepted) {
+    QVector<QVariant> row = dlg.getData();
+    pModel_->addRow(row);
+  }
   //keep it at the end of the function;
   logger.log("Добавлена новая строка в csv файл", Logger::Level::INFO);
 }
 
 void MainWindow::removeRow()
 {
-
+  QModelIndex idx = ui->tableView->selectionModel()->currentIndex();
+  //qsizetype rowCnt = ui->tableView->
+  //pModel_->deleteRow(idx.row());
   //add the # of row;
-  logger.log("Удалена строка в csv файл", Logger::Level::INFO);
+  logger.log("Удалена строка в csv файле", Logger::Level::INFO);
 }
 
 void MainWindow::editCell()
@@ -137,15 +145,23 @@ void MainWindow::editCell()
   logger.log("Изменена строка в csv файле", Logger::Level::INFO);
 }
 
-void MainWindow::editClicked(const QModelIndex& ind)
+void MainWindow::editRow()
 {
-  int row = pProxy_->mapToSource(ind).row();
-  //pModel_->set
+  QModelIndex idx = ui->tableView->selectionModel()->currentIndex();
+  int row = pProxy_->mapToSource(idx).row();
+
+  MmhDialog dlg;
+  dlg.setData(pModel_->getRow(row));
+
+  if (dlg.exec() == QDialog::DialogCode::Accepted) {
+    QVector<QVariant> row = dlg.getData();
+    //pModel_->editRow(row);
+  }
   //unsigned int idx = ui->tableView->selectionModel()->currentIndex().row();
   for (int i = 0; i < row; ++i)
-    {
+  {
 
-    }
+  }
 }
 
 void MainWindow::clearData()

@@ -23,10 +23,15 @@ public:
 
   QVariant data      (const QModelIndex& index, int role = Qt::DisplayRole) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-  void     setHeader  (const QStringList& headers);
-  //TODO
-  //void addRow(const QVector<QVariant>& rowData);
-  //void deleteRow(const size_t idx);
+  void     setHeader (const QStringList& headers);
+
+  void addRow   (const QVector<QVariant>& rowData);
+  void deleteRow(const qsizetype& idxRow);
+  void editRow  (const qsizetype& idxRow);
+
+  QVector<QVariant> getRow(const qsizetype& idxRow) const;
+  void              setRow(const qsizetype& idxRow, const QVector<QVariant>& rowData);
+
   const QVector<QVector<QVariant>>& getData() const;
 
 private:

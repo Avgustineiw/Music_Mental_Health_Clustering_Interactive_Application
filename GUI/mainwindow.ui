@@ -120,7 +120,7 @@
                 </widget>
                </item>
                <item row="2" column="0">
-                <widget class="QPushButton" name="pb_editCell">
+                <widget class="QPushButton" name="pb_editRow">
                  <property name="minimumSize">
                   <size>
                    <width>128</width>
@@ -845,7 +845,7 @@
      <x>0</x>
      <y>0</y>
      <width>1189</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
