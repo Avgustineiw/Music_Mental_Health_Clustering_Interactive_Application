@@ -50,3 +50,7 @@
 #### _4. Implement interpreting algorithm_
 #### _5. Implement GUI_
 #### _6. Write documentation_
+## Contribution of each of the members
+#### Zinkin Zakhar: everything inside "Core" except SLINK (read data, respondent projection to 2D space, necessary classes for algorithms, two clustering algorithms, silhoette interpretation, logger). GUI second form graph visualization, buttons to save images and results into separate files, comparison of clustering methods. Many changes regarding connection of "Core" and GUI. Code documentation
+#### Suvorova Alexandra: everything in GUI except aforementioned implementations. Two tables, the former showcases data from the survey, the latter shows data about clusterised points. Buttons to add/remove row and edit specific cells, ability to clear data. Buttons to choose a clustering algorithms as well as input the required number of clusters and iterations. This readme too was also written by her.
+#### Blinov Vladimir: Hierarchy (SLINK) clustering, app manual
