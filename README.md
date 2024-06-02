@@ -4,7 +4,7 @@
 ####    1. Tab 1 - Data input and clustering
 ####    2. Tab 2 - Data output and cluster visualization
 ### TAB #1 interface: Data input and clustering
-![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB1.jpg).
+![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB1.jpg)
 #### This tab allows you to input your data, manage it and perform clustering operations.
 #### Features：
 #### 1. Data table:
@@ -28,15 +28,15 @@ On the right there are several buttons that allow the user to modify the data an
 ##### Clusterize Button: Executes the clustering process based on selected parameters.
 
 ### TAB #2 interface: Data output and cluster visualization
-![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB2.jpg).
-##### _Shows the result of clustering via silhouette algorithm_
+![Screenshot of a plan of the interface part 1](https://github.com/Avgustineiw/Project_cpp/blob/FinnTheHuman/TAB2.jpg)
+#### _Shows the result of clustering_
 #### Features：
 #### 1. Clustered data table：
 The majority of the space is occupied by the output data presented in a form of a colored scatter plot and a table with the following columns:
    1. _X Coordinate: X-axis value of the data point._
    2. _Y Coordinate: Y-axis value of the data point._
    3. _Cluster: Cluster number the data point belongs to._
-The scatter plot provides the user with such information as:
+##### The scatter plot provides the user with such information as:
    1. _Visual representation of the clusters._
    2. _Color-coded by cluster data points._
 #### 2. Buttons：
@@ -62,7 +62,7 @@ When the application starts, the tab 1 is opened:
    5. _Use the "Compare Methods" button to compare different clustering methods (after clicked, choose three files saved by button "Save Results")._
 
 ## Summary
-### Using the following instuctions, user should be able to effectively use the Music & Mental Health interactive application to analyze and visualize the data.
+Using the following instuctions, user should be able to effectively use the Music & Mental Health interactive application to analyze and visualize the data.
 
 
 
