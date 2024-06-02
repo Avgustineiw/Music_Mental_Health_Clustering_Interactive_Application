@@ -7,14 +7,17 @@
 class ClusteringResult
 {
 private:
-  int _iterations;
+  unsigned int _iterations;
   vector<Point> _points;
   vector<Cluster> _clusters;
 
 public:
-  ClusteringResult(int iterations = 0):
+  ClusteringResult(unsigned int iterations = 0):
                    _iterations(iterations) {};
-  ~ClusteringResult() {};
+  ~ClusteringResult() {
+      _points.clear();
+      _clusters.clear();
+  };
   void SetIterations(int iterations) {
       this->_iterations = iterations;
   }
@@ -39,5 +42,13 @@ public:
   }
   Cluster GetCluster(int i) const {
     return _clusters[i];
+  }
+
+  vector<Point> GetPoints() {
+    return _points;
+  }
+
+  vector<Cluster> GetClusters() {
+    return _clusters;
   }
 };

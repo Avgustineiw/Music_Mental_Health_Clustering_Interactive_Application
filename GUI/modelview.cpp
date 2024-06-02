@@ -1,6 +1,7 @@
 #include "modelview.h"
 
 #include <QFile>
+#include <QTextStream>
 
 #include <stdexcept>
 
@@ -8,13 +9,25 @@ ModelView::ModelView(QObject* parent)
   : QAbstractTableModel(parent)
 {}
 
-//ModelView::ModelView(const QVector<QVector<QVariant> >& _data, QObject* parent) //
-//{
-// this->data_ = _data;
-//}
+//tableView_clusterize Tab2
+ModelView::ModelView(const vector<Point>& points, QObject* parent)
+  : QAbstractTableModel(parent)
+{
+    for (unsigned int i = 0; i < points.size(); ++i)
+  {
+    QVector<QVariant> row2;
 
+    //row2.append(QVariant(int(points[i].GetPointId())));
+    row2.append(QVariant(double(points[i].GetX())));
+    row2.append(QVariant(double(points[i].GetY())));
+    row2.append(QVariant(int(points[i].GetClusterId())));
 
-ModelView::ModelView(const QString& fileName, QObject* parent) //
+    data_.append(row2);
+  }
+}
+
+//tableView Tab1
+ModelView::ModelView(const QString& fileName, QObject* parent)
   : QAbstractTableModel(parent)
 {
   QFile file(fileName);
@@ -151,3 +164,62 @@ const QVector<QVector<QVariant>>& ModelView::getData() const
 {
   return data_;
 }
+
+void ModelView::setHeader(const QStringList& headers)
+{
+  this->header_ = headers;
+}
+
+
+void ModelView::addRow(const QVector<QVariant>& rowData)
+{
+  if (rowData.size() != this->columnCount()) {
+    return;
+  }
+  int rowCnt = this->rowCount();
+  this->insertRow(rowCnt);
+
+  // for (qsizetype column = 0; column < this->columnCount(); ++column)
+  // {
+  //   QModelIndex idx = this->index(rowCnt, column);
+  //   this->setData(idx, rowData[column], Qt::EditRole);
+  // }
+  this->beginInsertRows(QModelIndex(), rowCnt, rowCnt);
+  data_.append(rowData);
+  this->endInsertRows();
+  //this
+}
+
+void ModelView::deleteRow(const qsizetype& idxRow)
+{
+  if (idxRow < 0 || idxRow > this->rowCount()) {
+    return;
+  }
+  data_.removeAt(idxRow);
+  this->removeRow(idxRow);
+}
+
+void ModelView::editRow(const qsizetype& idxRow)
+{
+
+}
+
+QVector<QVariant> ModelView::getRow(const qsizetype& idxRow) const
+{
+  if (idxRow < 0 || idxRow > this->rowCount()) {
+    return {};
+  }
+  return data_[idxRow];
+}
+
+void ModelView::setRow(const qsizetype& idxRow, const QVector<QVariant>& rowData)
+{
+  if (idxRow < 0 || idxRow > this->rowCount() || rowData.size() != this->columnCount()) {
+    return;
+  }
+  for (qsizetype i = 0; i < rowData.size(); ++i)
+  {
+    data_[idxRow][i] = rowData[i];
+  }
+}
+

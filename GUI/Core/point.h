@@ -13,19 +13,21 @@ protected:
   int _clusterId;
 
 public:
-  Point(double x, double y, int pointId, int clusterId = 0): 
+  Point() = default;
+  Point(double x, double y, int pointId, int clusterId = 0):
         _x(x), _y(y), _pointId(pointId), _clusterId(clusterId) {};
-  virtual double GetX() const {
+  ~Point() {};
+  double GetX() const {
     return _x;
   }
-  virtual double GetY() const {
+  double GetY() const {
     return _y;
   }
 
-  virtual void SetX(double& x) {
+  void SetX(double& x) {
     this->_x = x;
   }
-  virtual void SetY(double& y) {
+  void SetY(double& y) {
     this->_y = y;
   }
 
@@ -58,13 +60,14 @@ public:
     this->_centroid.push_back(centroid.GetY());
     this->SetPoint(centroid);
   };
+  ~Cluster() {};
   
   void SetPoint(Point& point) {
     point.SetClusterId(this->_clusterId);
     _points.push_back(point);
   }
   bool RemovePoint(int& pointId) {
-    int size = _points.size();
+    unsigned int size = _points.size();
 
     for (size_t i = 0; i < size; i++) {
       if (_points[i].GetPointId() == pointId) {

@@ -1,9 +1,8 @@
-#include "header.h"
 #include "string"
+#include <iostream>
+#include "header.h"
 
-using namespace std;
-
-const string INPUT_PATH = "/Users/finnthehuman/Documents/GitHub/Project_cpp/music_health_data.csv";;
+const std::string INPUT_PATH = "/Users/avgustine/Project_cpp/GUI/build/Debug-build/Source/music_health_data.csv";
 
 int main()
 {

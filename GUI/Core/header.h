@@ -1,21 +1,24 @@
 #pragma once
+#include "hierarchy.h"
 #include "readFromCSV.h"
 #include "respondentToPoint.h"
-#include "k-means.h"
 #include "point.h"
 #include "k-medoids.h"
 #include "hierarchy.h"
 #include "SLINK.h"
 
 #include <vector>
-#include <iostream>
 #include <ctime>
 
-vector<Point> InitializeProgram(string CSV_PATH)
+#include <QString>
+
+#include "k-means.h"
+
+vector<Point> InitializeProgram(QString CSV_PATH)
 {
   vector<vector<string>> data;
-  vector<Respondent> respondents;
   vector<Point> data_points;
+  vector<Respondent> respondents;
 
   ReadFromCSV(CSV_PATH, data);
   DataToRespondent(data, respondents);
@@ -24,8 +27,8 @@ vector<Point> InitializeProgram(string CSV_PATH)
     data_points.push_back(respondentToPoint(respondents[i], i+1));
   }
 
-   KMeans clustering = {2, 10}; //terminal debug
-   clustering.Run(data_points);
+  // Hierarchy clustering = {2, 10}; //terminal debug
+  // clustering.Run(data_points);
 
   return data_points;
 }
