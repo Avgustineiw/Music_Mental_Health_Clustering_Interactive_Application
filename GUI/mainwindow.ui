@@ -143,7 +143,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Edit cell</string>
+                  <string>Edit row</string>
                  </property>
                 </widget>
                </item>
@@ -856,22 +856,7 @@
     <addaction name="actionSave_as"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuDocumentation">
-    <property name="font">
-     <font>
-      <family>Calibri</family>
-      <pointsize>10</pointsize>
-      <bold>false</bold>
-      <strikeout>false</strikeout>
-      <kerning>true</kerning>
-     </font>
-    </property>
-    <property name="title">
-     <string>About</string>
-    </property>
-   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuDocumentation"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">

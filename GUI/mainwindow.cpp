@@ -132,9 +132,11 @@ void MainWindow::addRow()
 
 void MainWindow::removeRow()
 {
-  QModelIndex idx = ui->tableView->selectionModel()->currentIndex();
-  //qsizetype rowCnt = ui->tableView->
-  //pModel_->deleteRow(idx.row());
+  QModelIndex selectedRow = ui->tableView->selectionModel()->currentIndex();
+  qsizetype   modelRow    = pProxy_->mapToSource(selectedRow).row();
+  if (modelRow >= 0 && modelRow < pModel_->rowCount()) {
+      pModel_->removeRow(modelRow);
+  }
   //add the # of row;
   logger.log("Удалена строка в csv файле", Logger::Level::INFO);
 }
@@ -148,26 +150,26 @@ void MainWindow::editCell()
 
 void MainWindow::editRow()
 {
-  QModelIndex idx = ui->tableView->selectionModel()->currentIndex();
-  int row = pProxy_->mapToSource(idx).row();
+  QModelIndex selectedRow = ui->tableView->selectionModel()->currentIndex();
+  qsizetype   modelRow    = pProxy_->mapToSource(selectedRow).row();
 
-  MmhDialog dlg;
-  dlg.setData(pModel_->getRow(row));
+  if(modelRow != -1) {
+    MmhDialog dlg;
+    dlg.setData(pModel_->getRow(modelRow));
 
-  if (dlg.exec() == QDialog::DialogCode::Accepted) {
-    QVector<QVariant> row = dlg.getData();
-    //pModel_->editRow(row);
+    if (dlg.exec() == QDialog::DialogCode::Accepted) {
+      QVector<QVariant> row = dlg.getData();
+      pModel_->editRow(modelRow, row);
+    }
+
+    //emit QAbstractTableModel::dataChanged(selectedRow)
   }
-  //unsigned int idx = ui->tableView->selectionModel()->currentIndex().row();
-  for (int i = 0; i < row; ++i)
-  {
 
-  }
 }
 
 void MainWindow::clearData()
 {
-
+  pModel_->clearData();
 }
 
 void MainWindow::clusterize()

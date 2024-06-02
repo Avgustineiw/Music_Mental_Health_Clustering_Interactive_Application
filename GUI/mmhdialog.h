@@ -24,6 +24,8 @@ public:
 
 private slots:
   void on_buttonBox_accepted();
+  void handleAccepted();
+  void handleRejected();
 
 private:
   Ui::MmhDialog *ui;

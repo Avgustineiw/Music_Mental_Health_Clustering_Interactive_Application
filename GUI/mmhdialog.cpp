@@ -8,15 +8,18 @@ MmhDialog::MmhDialog (QWidget *parent)
 {
   ui->setupUi (this);
 
-  ui->le_Age->       setText("23");
-  ui->le_HPD->       setText("2");
-  ui->le_Musician->  setText("true");
-  ui->le_Frequency-> setText("5");
-  ui->le_Anxiety->   setText("3");
-  ui->le_Depression->setText("3");
-  ui->le_Insomnia->  setText("2");
-  ui->le_OCD->       setText("3");
-  ui->le_Effect->    setText("1");
+  ui->le_Age->       setPlaceholderText("23");
+  ui->le_HPD->       setPlaceholderText("2");
+  ui->le_Musician->  setPlaceholderText("true");
+  ui->le_Frequency-> setPlaceholderText("5");
+  ui->le_Anxiety->   setPlaceholderText("3");
+  ui->le_Depression->setPlaceholderText("3");
+  ui->le_Insomnia->  setPlaceholderText("2");
+  ui->le_OCD->       setPlaceholderText("3");
+  ui->le_Effect->    setPlaceholderText("1");
+
+  connect(ui->pb_OK,     &QPushButton::clicked, this, &MmhDialog::handleAccepted);
+  connect(ui->pb_Cancel, &QPushButton::clicked, this, &QDialog::reject);
 }
 
 MmhDialog::~MmhDialog () { delete ui; }
@@ -76,17 +79,18 @@ void MmhDialog::setData(const QVector<QVariant>& data)
   if (data.size() != 9) {
     return;
   }
-  qsizetype i = 0;
   data_ = data;
-  ui->le_Age->       setText(data[i++].toString());
-  ui->le_HPD->       setText(data[i++].toString());
-  ui->le_Musician->  setText(data[i++].toString());
-  ui->le_Frequency-> setText(data[i++].toString());
-  ui->le_Anxiety->   setText(data[i++].toString());
-  ui->le_Depression->setText(data[i++].toString());
-  ui->le_Insomnia->  setText(data[i++].toString());
-  ui->le_OCD->       setText(data[i++].toString());
-  ui->le_Effect->    setText(data[i++].toString());
+
+  ui->le_Age->       setText(data[0].toString());
+  ui->le_HPD->       setText(data[1].toString());
+  ui->le_Musician->  setText(data[2].toString());
+  ui->le_Frequency-> setText(data[3].toString());
+  ui->le_Anxiety->   setText(data[4].toString());
+  ui->le_Depression->setText(data[5].toString());
+  ui->le_Insomnia->  setText(data[6].toString());
+  ui->le_OCD->       setText(data[7].toString());
+  ui->le_Effect->    setText(data[8].toString());
+
 }
 
 void MmhDialog::on_buttonBox_accepted()
@@ -100,5 +104,24 @@ void MmhDialog::on_buttonBox_accepted()
   else {
     QDialog::accept();
   }
+}
+
+void MmhDialog::handleAccepted()
+{
+  bool status = this->isValid();
+
+  if (!status) {
+    QMessageBox msgb;
+    msgb.setText("Invalid arguments");
+    msgb.exec();
+  }
+  else {
+    this->QDialog::accept();
+  }
+}
+
+void MmhDialog::handleRejected()
+{
+  QDialog::reject();
 }
 

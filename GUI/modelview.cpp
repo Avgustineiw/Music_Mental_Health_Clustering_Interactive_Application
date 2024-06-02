@@ -177,49 +177,40 @@ void ModelView::addRow(const QVector<QVariant>& rowData)
     return;
   }
   int rowCnt = this->rowCount();
-  this->insertRow(rowCnt);
-
-  // for (qsizetype column = 0; column < this->columnCount(); ++column)
-  // {
-  //   QModelIndex idx = this->index(rowCnt, column);
-  //   this->setData(idx, rowData[column], Qt::EditRole);
-  // }
   this->beginInsertRows(QModelIndex(), rowCnt, rowCnt);
   data_.append(rowData);
   this->endInsertRows();
-  //this
 }
 
-void ModelView::deleteRow(const qsizetype& idxRow)
+void ModelView::removeRow(const qsizetype& idxRow)
 {
-  if (idxRow < 0 || idxRow > this->rowCount()) {
-    return;
-  }
+  beginRemoveRows(QModelIndex(), idxRow, idxRow);
+  data_.remove(idxRow);
+  endRemoveRows();
+}
+
+void ModelView::editRow(const qsizetype& idxRow, const ModelView::ContainerData& rowData)
+{
+  beginRemoveRows(QModelIndex(), idxRow, idxRow);
   data_.removeAt(idxRow);
-  this->removeRow(idxRow);
+  endRemoveRows();
+
+  beginInsertRows(QModelIndex(), idxRow, idxRow);
+  data_.insert(idxRow, rowData);
+  endInsertRows();
 }
 
-void ModelView::editRow(const qsizetype& idxRow)
-{
-
-}
-
-QVector<QVariant> ModelView::getRow(const qsizetype& idxRow) const
+const ModelView::ContainerData& ModelView::getRow(const qsizetype& idxRow) const
 {
   if (idxRow < 0 || idxRow > this->rowCount()) {
-    return {};
+    throw std::out_of_range("Row index is out of range");
   }
   return data_[idxRow];
 }
 
-void ModelView::setRow(const qsizetype& idxRow, const QVector<QVariant>& rowData)
+void ModelView::clearData()
 {
-  if (idxRow < 0 || idxRow > this->rowCount() || rowData.size() != this->columnCount()) {
-    return;
-  }
-  for (qsizetype i = 0; i < rowData.size(); ++i)
-  {
-    data_[idxRow][i] = rowData[i];
-  }
+  beginResetModel();
+  data_.clear();
+  endResetModel();
 }
-
