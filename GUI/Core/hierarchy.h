@@ -32,13 +32,14 @@ public:
     int index_1 = 0;
     int index_2 = 0;
 
+    //O(N^3) worst case;
     while (unique_clusters > _cluster_cnt) {
       double min_dist = INT_MAX;
 
       #pragma omp parallel num_threads(16)
 
-      for (unsigned int i = 0; i < _total_points; i++) {
-        for (unsigned int j = 0; j < _total_points; j++) {
+      for (unsigned int i = 0; i < _total_points - 1; i++) {
+        for (unsigned int j = i+1; j < _total_points; j++) {
           if (points[i].GetClusterId() != points[j].GetClusterId()) {
             double dist = Distance(points[i], points[j]);
             if (dist < min_dist) {

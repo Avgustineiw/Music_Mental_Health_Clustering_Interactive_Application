@@ -33,6 +33,7 @@ HEADERS += \
     Core/k-medoids.h \
     Core/getCurrentTime.h \\
 		Core/hierarchy.h \\
+		Core/SLINK.h \\
     clusterpoint.h \
     clusterscene.h \
     mainwindow.h \\

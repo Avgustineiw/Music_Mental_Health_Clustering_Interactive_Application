@@ -4,13 +4,13 @@
 
 const double AGE_WEIGTH = 0.5;
 const double HPD_WEIGTH = 2;
-const double MUSICIAN_WEIGTH = 10;
+const double MUSICIAN_WEIGTH = 100;
 const double FREQUENCY_WEIGTH = 2;
 const double ANXIETY_WEIGTH = 1;
 const double DEPRESSION_WEIGTH = 1;
 const double INSOMNIA_WEIGTH = 1;
 const double OCD_WEIGTH = 1;
-const double EFFECT_WEIGTH = 10;
+const double EFFECT_WEIGTH = 100;
 
 
 Point respondentToPoint(const Respondent& respondent, int id)

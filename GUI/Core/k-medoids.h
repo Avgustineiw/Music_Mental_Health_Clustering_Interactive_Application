@@ -36,6 +36,7 @@ public:
 
     unsigned int iter = 1;
 
+    //O(N^2) worst case;
     while (true) {
       bool done = true;
 
