@@ -11,6 +11,7 @@
 #include "Core/silhouette.h"
 #include "Core/getCurrentTime.h"
 #include "Core/logger.h"
+#include "Core/SLINK.h"
 
 #include "mmhdialog.h"
 
@@ -221,7 +222,7 @@ void MainWindow::clusterize()
   scaleY_ = sceneY / static_cast<double>(clusterBBox_.height());
 
   if (type == "Sort by Hierarchy") {
-    pClusterType_ = new Hierarchy(clusters, iterations);
+    pClusterType_ = new SLINK(clusters, iterations);
     Last_Algorithm_Used = "Hierarchy";
   }
   else if (type == "Sort by Medoids") {

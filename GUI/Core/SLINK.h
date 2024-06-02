@@ -25,23 +25,23 @@ public:
 
 ClusteringResult Run(vector<Point>& points) override {
     
-    int size = points.size();
+    unsigned int size = points.size();
     vector<int> pi(size), lambda(size);
     vector<vector<double>> D(size, vector<double>(size, 0));
 
-    for (int i = 0; i < size; ++i) {
+    for (unsigned int i = 0; i < size; ++i) {
         pi[i] = i;
         lambda[i] = INT_MAX;
     }
 
-    for (int i = 1; i < size; i++) {
+    for (unsigned int i = 1; i < size; i++) {
         for (int j = 0; j < i; j++) {
             D[i][j] = Distance(points[i], points[j]);
         }
 
         int m = i;
 
-        for (int j = 0; j < i; j++) {
+        for (unsigned int j = 0; j < i; j++) {
             if (D[i][j] < lambda[j]) {
                 lambda[j] = D[i][j];
                 pi[j] = i;
@@ -51,7 +51,7 @@ ClusteringResult Run(vector<Point>& points) override {
             }
         }
 
-        for (int j = 0; j < i; j++) {
+        for (unsigned int j = 0; j < i; j++) {
             if (lambda[j] >= lambda[m]) {
                 D[i][j] = lambda[j];
             } else {
@@ -67,15 +67,15 @@ ClusteringResult Run(vector<Point>& points) override {
 
     vector<int> clusterId(size);
     
-    for (int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < size; i++) {
         clusterId[i] = i;
     }
 
-    for (int i = 0; i < size - _cluster_cnt; i++) {
+    for (unsigned int i = 0; i < size - _cluster_cnt; i++) {
         int minIndex = min_element(lambda.begin(), lambda.end()) - lambda.begin();
         int root = pi[minIndex];
 
-        for (int j = 0; j < size; j++) {
+        for (unsigned int j = 0; j < size; j++) {
             if (clusterId[j] == minIndex) {
                 clusterId[j] = root;
             }
@@ -85,12 +85,12 @@ ClusteringResult Run(vector<Point>& points) override {
     }
 
     
-    for(int i = 0; i < size; i++) {
+    for(unsigned int i = 0; i < size; i++) {
       points[i].SetClusterId(clusterId[i]);
     }
     
     set<int> uniqueIDs(clusterId.begin(), clusterId.end());
-    int clusterId_cnt = uniqueIDs.size();
+    unsigned int clusterId_cnt = uniqueIDs.size();
 
     while (clusterId_cnt > _cluster_cnt) {
         double minDist = INT_MAX;
@@ -127,13 +127,13 @@ ClusteringResult Run(vector<Point>& points) override {
     for(int i : uniqueIDs2) {
         oldID_newID[i] = tmp++;
     }
-    for(unsigned int i = 0; i < size; i++) {
+    for(int i = 0; i < size; i++) {
         points[i].SetClusterId(oldID_newID[points[i].GetClusterId()]);
     }
 
-    for(int i = 0; i < _cluster_cnt; i++) {
+    for(unsigned int i = 0; i < _cluster_cnt; i++) {
         Cluster cluster = Cluster(i + 1, points[i]);
-        for(int j = 0; j < size; j++) {
+        for(unsigned int j = 0; j < size; j++) {
             if(points[j].GetClusterId() == i + 1) {
                 cluster.SetPoint(points[j]);
             }

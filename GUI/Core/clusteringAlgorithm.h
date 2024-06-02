@@ -24,7 +24,7 @@ protected:
   }
 
   double Distance(Point A, Point B) {
-    return sqrt(pow(A.GetX() - B.GetX(), 2) + pow(A.GetY() - B.GetY(), 2));
+      return pow(A.GetX() - B.GetX(),2) + pow(A.GetY() - B.GetY(), 2);
   }
 
   Point GetNearestPoint(vector<Point>& points, double x, double y) {
@@ -73,25 +73,6 @@ protected:
 
     return NearestClusterId;
   }
-
-  double Distance(const Point& p1, const Point& p2) {
-    double point1 = p1.GetX() - p2.GetX();
-    double point2 = p1.GetY() - p2.GetY();
-    return (point1) * (point1) + (point2) * (point2);
-  }
-
-  double ClusterDistance(const Cluster& cluster1, const Cluster& cluster2) {
-        double MinDist = 100000;
-        for (Point i : cluster1.GetPoints()) {
-            for (Point j : cluster2.GetPoints()) {
-                double Dist = Distance(i, j);
-                if (Dist < MinDist) {
-                    MinDist = Dist;
-                }
-            }
-        }
-        return MinDist;
-    };
 
 public:
   ClusteringAlgorithm(int cluster_cnt, int iterations):  
